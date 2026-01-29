@@ -1,295 +1,286 @@
-<!-- Статистика -->
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalQuestions">0</div>
-                        <div class="stat-label">Всего вопросов</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="answeredQuestions">0</div>
-                        <div class="stat-label">С ответами</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="lastUpdated">-</div>
-                        <div class="stat-label">Обновлено</div>
-                    </div>
-                </div>
-                
-                <!-- Поиск -->
-                <div class="controls">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" 
-                               id="searchInput" 
-                               class="search-input" 
-                               placeholder="Поиск по вопросам, ответам или автору...">
-                    </div>
-                    
-                    <div class="category-tags" id="categoryTags">
-                        <div class="tag active" data-category="all">Все</div>
-                        <div class="tag" data-category="Технические">Технические</div>
-                        <div class="tag" data-category="Организационные">Организационные</div>
-                        <div class="tag" data-category="Учебные">Учебные</div>
-                        <div class="tag" data-category="Важные">Важные</div>
-                    </div>
-                </div>
-                
-                <!-- Таблица с вопросами -->
-                <div class="table-container">
-                    <table id="questionsTable">
-                        <thead>
-                            <tr>
-                                <th width="5%"><i class="fas fa-hashtag"></i> №</th>
-                                <th width="30%"><i class="fas fa-question"></i> Вопрос</th>
-                                <th width="45%"><i class="fas fa-comment-alt"></i> Ответ</th>
-                                <th width="15%"><i class="fas fa-user"></i> От кого</th>
-                                <th width="5%"><i class="fas fa-calendar"></i> Дата</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Данные загружаются через JavaScript -->
-                            <tr>
-                                <td colspan="5" class="loading">
-                                    <div class="loading-spinner"></div>
-                                    <p>Загрузка данных из Google Таблицы...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Пагинация -->
-                <div class="pagination" id="pagination">
-                    <!-- Кнопки пагинации генерируются через JS -->
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица вопросов и ответов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        thead {
+            background: #3498db;
+        }
+        
+        th {
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th:last-child {
+            border-right: none;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        td {
+            padding: 18px 15px;
+            vertical-align: top;
+            border-right: 1px solid #eee;
+        }
+        
+        td:last-child {
+            border-right: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        
+        .update-info {
+            display: inline-block;
+            background: #ecf0f1;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
             
-            <!-- Правая колонка - управление -->
-            <div class="sidebar">
-                <div class="sidebar-section">
-                    <h2><i class="fas fa-external-link-alt"></i> Ссылки</h2>
-                    
-                    <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" 
-                       target="_blank" class="link-card">
-                        <i class="fas fa-file-excel"></i>
-                        <div class="link-info">
-                            <h4>Google Таблица</h4>
-<p>Редактировать вопросы и ответы</p>
-                        </div>
-                    </a>
-                    
-                    <a href="https://docs.google.com/forms" target="_blank" class="link-card">
-                        <i class="fas fa-plus-square"></i>
-                        <div class="link-info">
-                            <h4>Добавить вопрос</h4>
-                            <p>Создать новую форму для вопросов</p>
-                        </div>
-                    </a>
-                    
-                    <a href="#" onclick="exportToExcel()" class="link-card">
-                        <i class="fas fa-download"></i>
-                        <div class="link-info">
-                            <h4>Экспорт данных</h4>
-                            <p>Скачать все в Excel/CSV</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h2><i class="fas fa-tools"></i> Управление</h2>
-                    
-                    <button class="btn btn-refresh" onclick="loadData()">
-                        <i class="fas fa-sync-alt"></i>
-                        Обновить данные
-                    </button>
-                    
-                    <button class="btn" onclick="addSampleQuestion()">
-                        <i class="fas fa-plus-circle"></i>
-                        Добавить тестовый вопрос
-                    </button>
-                    
-                    <div class="update-info">
-                        <p><i class="fas fa-info-circle"></i> Статус синхронизации</p>
-                        <div class="update-time" id="lastSync">Не синхронизировано</div>
-                        <p style="font-size: 0.8rem; margin-top: 5px;">
-                            Следующее обновление через: 
-                            <span id="nextUpdate">5:00</span>
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h2><i class="fas fa-info-circle"></i> Инструкция</h2>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
-                        <p style="margin-bottom: 10px;"><strong>Как добавить вопрос:</strong></p>
-                        <ol style="padding-left: 20px; margin-bottom: 15px; line-height: 1.6;">
-                            <li>Откройте Google Таблицу по ссылке</li>
-                            <li>Добавьте новую строку</li>
-                            <li>Заполните: Вопрос, Ответ, От кого</li>
-                            <li>Данные появятся на сайте через 5 минут</li>
-                        </ol>
-                        <p style="font-size: 0.9rem; color: #666;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Для немедленного обновления нажмите "Обновить данные"
-                        </p>
-                    </div>
-                </div>
-            </div>
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Таблица вопросов и ответов</h1>
+            <p>Данные автоматически обновляются из Google Таблицы</p>
         </div>
         
-        <!-- Подвал -->
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th width="5%">№</th>
+                        <th width="35%">Вопрос</th>
+                        <th width="50%">Ответ</th>
+                        <th width="10%">От кого</th>
+                    </tr>
+</thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="4" class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Загрузка данных из Google Таблицы...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
         <div class="footer">
-            <p>© 2024 FAQ База знаний. Данные хранятся в <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" target="_blank">Google Таблице</a></p>
-            <p style="margin-top: 10px; font-size: 0.8rem;">
-                <i class="fas fa-shield-alt"></i> Все данные защищены. Только для внутреннего использования.
+            <div class="update-info">
+                Последнее обновление: <span id="lastUpdate">-</span>
+            </div>
+            <p style="margin-top: 10px;">
+                Ссылка на таблицу: 
+                <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" 
+                   target="_blank">
+                    Открыть Google Таблицу
+                </a>
             </p>
         </div>
     </div>
     
     <script>
         // Конфигурация
-        const CONFIG = {
-            googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing',
-            autoRefreshInterval: 5 * 60 * 1000, // 5 минут
-itemsPerPage: 10
-        };
+        const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing';
         
-        // Глобальные переменные
-        let allQuestions = [];
-        let filteredQuestions = [];
-        let currentPage = 1;
-        let totalPages = 1;
-        let refreshTimer = null;
-        let countdownTimer = null;
+        // Функция для получения публичной версии таблицы
+        function getPublicSheetUrl() {
+            // Изменяем URL для получения публичного доступа
+            const sheetId = '1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4';
+            return https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Sheet1;
+        }
         
-        // Основная функция загрузки данных
-        async function loadData() {
+        // Загрузка данных из Google Sheets
+        async function loadGoogleSheetData() {
             try {
                 showLoading();
-                updateSyncStatus('Загрузка данных...', 'loading');
                 
-                // В реальном приложении здесь будет запрос к Google Sheets API
-                // Для демо используем тестовые данные
-                await simulateDataLoad();
+                // Получаем CSV данные
+                const response = await fetch(getPublicSheetUrl());
+                const csvText = await response.text();
                 
-                // Обновляем интерфейс
-                updateUI();
-                updateSyncStatus('Данные загружены', 'success');
+                // Парсим CSV
+                const rows = parseCSV(csvText);
                 
-                // Запускаем таймер следующего обновления
-                startCountdown();
+                // Отображаем данные
+                displayData(rows);
+                
+                // Обновляем время
+                updateLastUpdateTime();
                 
             } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-                updateSyncStatus('Ошибка загрузки', 'error');
-                showError('Не удалось загрузить данные. Проверьте подключение к интернету.');
+                console.error('Ошибка загрузки:', error);
+                showError('Не удалось загрузить данные. Проверьте доступность таблицы.');
             }
         }
         
-        // Имитация загрузки данных (в реальном приложении замените на API запрос)
-        function simulateDataLoad() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    // Тестовые данные
-                    allQuestions = [
-                        {
-                            id: 1,
-                            question: "Как получить доступ к учебному порталу?",
-                            answer: "Доступ предоставляется автоматически после регистрации. Логин: студенческий билет, пароль: дата рождения в формате ДДММГГГГ.",
-                            author: "IT-отдел",
-                            category: "Технические",
-                            date: "15.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 2,
-                            question: "Когда нужно оплачивать обучение?",
-                            answer: "Оплата производится до 10 числа каждого месяца. Реквизиты можно найти в личном кабинете.",
-                            author: "Бухгалтерия",
-                            category: "Организационные",
-                            date: "14.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 3,
-                            question: "Как подать заявление на общежитие?",
-                            answer: "Заявление подается через деканат. Необходимые документы: паспорт, заявление, справка о доходах семьи.",
-                            author: "Деканат",
-                            category: "Организационные",
-                            date: "13.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 4,
-                            question: "Что делать при утере студенческого билета?",
-                            answer: "Обратиться в учебную часть для получения дубликата. Стоимость восстановления - 500 руб.",
-                            author: "Учебная часть",
-                            category: "Организационные",
-                            date: "12.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 5,
-                            question: "Как подключиться к Wi-Fi в корпусе?",
-                            answer: "Используйте сеть 'University_WiFi'. Логин: student_номер_билета, пароль: university2024",
-author: "Техподдержка",
-                            category: "Технические",
-                            date: "11.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 6,
-                            question: "Где можно получить справку об обучении?",
-                            answer: "В учебной части с 9:00 до 17:00. Справка готовится в течение 3 рабочих дней.",
-                            author: "Учебная часть",
-                            category: "Учебные",
-                            date: "10.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 7,
-                            question: "Как записаться на дополнительные курсы?",
-                            answer: "Запись через личный кабинет в разделе 'Дополнительное образование'.",
-                            author: "Отдел ДО",
-                            category: "Учебные",
-                            date: "09.01.2024",
-                            status: "answered"
-                        },
-                        {
-                            id: 8,
-                            question: "Какие льготы есть у студентов?",
-                            answer: "Студенты имеют право на: транспортные льготы, скидки в музеях, налоговые вычеты. Подробнее у куратора.",
-                            author: "Соц. отдел",
-                            category: "Важные",
-                            date: "08.01.2024",
-                            status: "answered"
-                        }
-                    ];
-                    resolve();
-                }, 1500); // Имитация задержки сети
-            });
-        }
-        
-        // Обновление интерфейса
-        function updateUI() {
-            updateTable();
-            updateStats();
-            updatePagination();
-        }
-        
-        // Обновление таблицы
-        function updateTable() {
-            const tableBody = document.getElementById('tableBody');
-            const startIndex = (currentPage - 1) * CONFIG.itemsPerPage;
-            const endIndex = startIndex + CONFIG.itemsPerPage;
-            const pageQuestions = filteredQuestions.slice(startIndex, endIndex);
+        // Парсинг CSV
+        function parseCSV(csvText) {
+            const rows = [];
+            const lines = csvText.split('\n');
             
-            if (pageQuestions.length === 0) {
+            lines.forEach((line, index) => {
+                if (line.trim() === '') return;
+                
+                // Простой парсинг CSV (для более сложных случаев используйте библиотеку)
+                const columns = parseCSVLine(line);
+                
+                // Пропускаем заголовок если нужно
+                if (index === 0 && (columns[0] === 'Вопрос' || columns[0].includes('?'))) {
+                    return;
+                }
+                
+                // Добавляем данные
+                if (columns.length >= 3) {
+                    rows.push({
+                        question: columns[0] || '',
+                        answer: columns[1] || '',
+                        author: columns[2] || '',
+                        rowNumber: index + 1
+                    });
+                }
+            });
+            
+            return rows;
+        }
+        
+        // Простой парсер CSV строки
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+                
+                if (char === '"' && nextChar === '"') {
+                    current += '"';
+                    i++; // Пропускаем следующий символ
+} else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+        
+        // Отображение данных в таблице
+        function displayData(rows) {
+            const tableBody = document.getElementById('tableBody');
+            
+            if (rows.length === 0) {
                 tableBody.innerHTML = 
                     <tr>
-                        <td colspan="5" class="empty-state">
-                            <i class="fas fa-inbox"></i>
-                            <h3>Нет вопросов</h3>
-                            <p>Попробуйте изменить поисковый запрос или добавьте новые вопросы</p>
+                        <td colspan="4" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                            Нет данных в таблице
                         </td>
                     </tr>
                 ;
@@ -297,19 +288,14 @@ author: "Техподдержка",
             }
             
             let html = '';
-            pageQuestions.forEach((item, index) => {
-                const globalIndex = startIndex + index + 1;
+            
+            rows.forEach((row, index) => {
                 html += 
                     <tr>
-                        <td>${globalIndex}</td>
-                        <td class="question-cell">
-                            ${item.question}
-                            ${item.status === 'new' ? '<div class="status-badge status-new">Новый</div>' : ''}
-                            ${item.status === 'answered' ? '<div class="status-badge status-answered">Ответ дан</div>' : ''}
-                        </td>
-                        <td class="answer-cell">${item.answer}</td>
-                        <td class="author-cell">${item.author}</td>
-                        <td class="date-cell">${item.date}</td>
+                        <td>${index + 1}</td>
+                        <td>${escapeHTML(row.question)}</td>
+                        <td>${escapeHTML(row.answer)}</td>
+                        <td>${escapeHTML(row.author)}</td>
                     </tr>
                 ;
             });
@@ -317,151 +303,16 @@ author: "Техподдержка",
             tableBody.innerHTML = html;
         }
         
-        // Обновление статистики
-function updateStats() {
-            document.getElementById('totalQuestions').textContent = filteredQuestions.length;
-            
-            const answered = filteredQuestions.filter(q => q.status === 'answered').length;
-            document.getElementById('answeredQuestions').textContent = answered;
-            
-            const now = new Date();
-            document.getElementById('lastUpdated').textContent = 
-                ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')};
-        }
-        
-        // Обновление пагинации
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            totalPages = Math.ceil(filteredQuestions.length / CONFIG.itemsPerPage);
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-            
-            let html = '';
-            
-            // Кнопка "Назад"
-            html += <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" 
-                     onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                     <i class="fas fa-chevron-left"></i></button>;
-            
-            // Номера страниц
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1  i === totalPages  (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    html += <button class="page-btn ${currentPage === i ? 'active' : ''}" 
-                             onclick="changePage(${i})">${i}</button>;
-                } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += <span class="page-btn disabled">...</span>;
-                }
-            }
-            
-            // Кнопка "Вперед"
-            html += <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" 
-                     onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                     <i class="fas fa-chevron-right"></i></button>;
-            
-            pagination.innerHTML = html;
-        }
-        
-        // Смена страницы
-        function changePage(page) {
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            updateTable();
-            updatePagination();
-        }
-        
-        // Поиск
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            let searchTimeout;
-            
-            searchInput.addEventListener('input', function(e) {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    const searchTerm = e.target.value.toLowerCase().trim();
-                    
-                    if (searchTerm === '') {
-                        filteredQuestions = [...allQuestions];
-                    } else {
-                        filteredQuestions = allQuestions.filter(item => 
-                            item.question.toLowerCase().includes(searchTerm) ||
-                            item.answer.toLowerCase().includes(searchTerm) ||
-                            item.author.toLowerCase().includes(searchTerm) ||
-                            item.category.toLowerCase().includes(searchTerm)
-                        );
-                    }
-                    
-                    currentPage = 1;
-                    updateUI();
-                }, 300);
-            });
-        }
-        
-        // Фильтрация по категориям
-        function setupCategoryFilter() {
-            const tags = document.querySelectorAll('#categoryTags .tag');
-            
-            tags.forEach(tag => {
-                tag.addEventListener('click', function() {
-// Убираем активный класс у всех тегов
-                    tags.forEach(t => t.classList.remove('active'));
-                    // Добавляем активный класс текущему тегу
-                    this.classList.add('active');
-                    
-                    const category = this.dataset.category;
-                    
-                    if (category === 'all') {
-                        filteredQuestions = [...allQuestions];
-                    } else {
-                        filteredQuestions = allQuestions.filter(item => 
-                            item.category === category
-                        );
-                    }
-                    
-                    currentPage = 1;
-                    updateUI();
-                });
-            });
-        }
-        
-        // Статус синхронизации
-        function updateSyncStatus(message, type = 'info') {
-            const element = document.getElementById('lastSync');
-            element.textContent = message;
-            
-            // Сбрасываем классы
-            element.className = 'update-time';
-            
-            // Добавляем класс в зависимости от типа
-            if (type === 'loading') {
-                element.innerHTML = <i class="fas fa-spinner fa-spin"></i> ${message};
-            } else if (type === 'success') {
-                element.innerHTML = <i class="fas fa-check-circle" style="color: #2ecc71;"></i> ${message};
-            } else if (type === 'error') {
-                element.innerHTML = <i class="fas fa-times-circle" style="color: #e74c3c;"></i> ${message};
-            }
-        }
-        
-        // Таймер обратного отсчета
-        function startCountdown() {
-            let seconds = CONFIG.autoRefreshInterval / 1000;
-            const element = document.getElementById('nextUpdate');
-            
-            if (countdownTimer) clearInterval(countdownTimer);
-            
-            countdownTimer = setInterval(() => {
-                seconds--;
-                const minutes = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                element.textContent = ${minutes}:${secs.toString().padStart(2, '0')};
-                
-                if (seconds <= 0) {
-                    clearInterval(countdownTimer);
-                    loadData();
-                }
-            }, 1000);
+        // Экранирование HTML
+        function escapeHTML(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/\n/g, '<br>');
         }
         
         // Показать загрузку
@@ -469,7 +320,7 @@ function updateStats() {
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = 
                 <tr>
-                    <td colspan="5" class="loading">
+                    <td colspan="4" class="loading">
                         <div class="loading-spinner"></div>
                         <p>Загрузка данных из Google Таблицы...</p>
                     </td>
@@ -482,95 +333,43 @@ function updateStats() {
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = 
                 <tr>
-                    <td colspan="5" class="empty-state">
-                        <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-                        <h3>Ошибка загрузки</h3>
-                        <p>${message}</p>
-                        <button class="btn" onclick="loadData()" style="margin-top: 20px;">
-                            <i class="fas fa-redo"></i> Попробовать снова
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #e74c3c;">
+                        <p style="margin-bottom: 15px;">${message}</p>
+                        <button onclick="loadGoogleSheetData()" 
+                                style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Попробовать снова
                         </button>
                     </td>
                 </tr>
             ;
         }
         
-        // Экспорт в Excel
-        function exportToExcel() {
-            const data = filteredQuestions.map((item, index) => ({
-                '№': index + 1,
-                'Вопрос': item.question,
-                'Ответ': item.answer,
-                'От кого': item.author,
-'Категория': item.category,
-                'Дата': item.date,
-                'Статус': item.status === 'answered' ? 'Ответ дан' : 'Новый'
-            }));
+        // Обновить время последнего обновления
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
             
-            // Создаем CSV
-            const headers = ['№', 'Вопрос', 'Ответ', 'От кого', 'Категория', 'Дата', 'Статус'];
-            const csvContent = [
-                headers.join(','),
-                ...data.map(row => headers.map(header => "${row[header]}").join(','))
-            ].join('\n');
-            
-            // Создаем и скачиваем файл
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = faq_export_${new Date().toISOString().split('T')[0]}.csv;
-            link.click();
-            
-            alert(Экспортировано ${data.length} вопросов);
+            document.getElementById('lastUpdate').textContent = timeString;
         }
         
-        // Добавить тестовый вопрос (для демо)
-        function addSampleQuestion() {
-            const newQuestion = {
-                id: allQuestions.length + 1,
-                question: "Новый тестовый вопрос?",
-                answer: "Это тестовый ответ. В реальной системе данные будут загружаться из Google Таблицы.",
-                author: "Система",
-                category: "Технические",
-                date: new Date().toLocaleDateString('ru-RU'),
-                status: "answered"
-            };
-            
-            allQuestions.unshift(newQuestion);
-            filteredQuestions = [...allQuestions];
-            currentPage = 1;
-            updateUI();
-            
-            updateSyncStatus('Тестовый вопрос добавлен', 'success');
-        }
-        
-        // Автообновление
+        // Автообновление каждые 2 минуты
         function startAutoRefresh() {
-            if (refreshTimer) clearInterval(refreshTimer);
-            refreshTimer = setInterval(loadData, CONFIG.autoRefreshInterval);
+            // Обновляем сразу при загрузке
+            loadGoogleSheetData();
+            
+            // Затем каждые 2 минуты
+            setInterval(loadGoogleSheetData, 2 * 60 * 1000);
         }
         
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация
-            filteredQuestions = [...allQuestions];
-            
-            // Настройка обработчиков
-            setupSearch();
-            setupCategoryFilter();
-            
-            // Загрузка данных
-            loadData();
-            
-            // Запуск автообновления
-            startAutoRefresh();
-            
-            // Обновляем время каждую секунду
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById('lastUpdated').textContent = 
-                    ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')};
-            }, 60000);
-        });
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', startAutoRefresh);
+        
+        // Обновление по клику на заголовок
+        document.querySelector('h1').addEventListener('click', loadGoogleSheetData);
     </script>
 </body>
 </html>
