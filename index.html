@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вопросы и ответы из Google Таблицы</title>
+    <title>Таблица вопросов и ответов</title>
     <style>
         * {
             margin: 0;
@@ -34,6 +34,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #3498db;
+            position: relative;
         }
         
         .header h1 {
@@ -47,29 +48,48 @@
             font-size: 1.1rem;
         }
         
-        .main-content {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
+        .add-button-container {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
-        .rules-form-section {
-            flex: 1;
-            min-width: 300px;
+        .add-btn {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-3px) translateY(-50%);
+            box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+            background: linear-gradient(to right, #27ae60, #219653);
+        }
+        
+        .rules-section {
             background: white;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            margin-bottom: 20px;
         }
         
         .rules-box {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
-            border-left: 4px solid #2ecc71;
+            border-left: 4px solid #3498db;
         }
         
         .rules-box h3 {
@@ -90,100 +110,12 @@
             margin-bottom: 8px;
         }
         
-        .form-box {
-            margin-top: 10px;
-        }
-        
-        .form-box h3 {
-            color: #2c3e50;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-group {
-            margin-bottom: 18px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #555;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 25px;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-        }
-        
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-secondary {
-            background: #ecf0f1;
-            color: #2c3e50;
-        }
-        
-        .btn-secondary:hover {
-            background: #d5dbdb;
-        }
-        
-        .table-section {
-            flex: 2;
-            min-width: 500px;
-        }
-        
         .table-container {
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 20px;
         }
         
         .table-header {
@@ -206,7 +138,7 @@
         }
         
         .refresh-btn {
-            background: #2ecc71;
+            background: #3498db;
             color: white;
             border: none;
             border-radius: 6px;
@@ -220,7 +152,7 @@
         }
         
         .refresh-btn:hover {
-            background: #27ae60;
+            background: #2980b9;
         }
         
         .auto-update-indicator {
@@ -245,11 +177,6 @@
             100% { opacity: 1; }
         }
         
-        .table-wrapper {
-            overflow-x: auto;
-            flex-grow: 1;
-        }
-        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -257,7 +184,7 @@
         }
         
         thead {
-            background: #3498db;
+            background: linear-gradient(to right, #3498db, #2980b9);
         }
         
         th {
@@ -292,10 +219,9 @@
             border-right: none;
         }
         
-        .status-message {
+        .loading {
             text-align: center;
-            padding: 30px;
-            color: #7f8c8d;
+            padding: 60px;
         }
         
         .loading-spinner {
@@ -313,20 +239,11 @@
             100% { transform: rotate(360deg); }
         }
         
-        .error-message {
-            color: #e74c3c;
-            text-align: center;
-            padding: 20px;
-        }
-        
         .footer {
             text-align: center;
-            padding: 20px;
+            margin-top: 30px;
             color: #95a5a6;
             font-size: 0.9rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
         
         .update-info {
@@ -337,32 +254,43 @@
             margin-top: 10px;
         }
         
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
-            display: none;
-            text-align: center;
-            border: 1px solid #c3e6cb;
-        }
-        
         @media (max-width: 768px) {
-            .main-content {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .add-button-container {
+                position: static;
+                transform: none;
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .add-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .controls {
                 flex-direction: column;
             }
             
-            .table-section, .rules-form-section {
-                min-width: 100%;
+            table {
+                font-size: 0.9rem;
             }
             
             th, td {
                 padding: 12px 8px;
-            }
-            
-            .form-actions {
-                flex-direction: column;
             }
         }
     </style>
@@ -372,90 +300,59 @@
         <div class="header">
             <h1>📊 Таблица вопросов и ответов</h1>
             <p>Данные автоматически обновляются из Google Таблицы</p>
+            <div class="add-button-container">
+                <button class="add-btn" onclick="window.open('https://yourmainhero.github.io/Chancellery/', '_blank')">
+                    <span>➕</span> Добавить вопрос
+                </button>
+            </div>
         </div>
         
-        <div class="main-content">
-            <!-- Блок с правилами и формой -->
-            <div class="rules-form-section">
-                <div class="rules-box">
-                    <h3>📝 Правила добавления информации</h3>
-                    <ul>
-                        <li>Вопрос должен быть чётким и конкретным</li>
-                        <li>Ответ должен быть максимально информативным</li>
-                        <li>Указывайте своё имя или никнейм в поле "От кого"</li>
-                        <li>Не используйте нецензурные выражения или оскорбления</li>
-                        <li>Проверьте информацию перед отправкой</li>
-                    </ul>
-                </div>
-                
-                <div class="form-box">
-                    <h3>➕ Добавить новый вопрос</h3>
-                    <form id="addForm">
-                        <div class="form-group">
-                            <label for="question">Вопрос:</label>
-                            <input type="text" id="question" placeholder="Введите ваш вопрос..." required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="answer">Ответ:</label>
-                            <textarea id="answer" placeholder="Введите ответ на вопрос..." required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="author">От кого:</label>
-                            <input type="text" id="author" placeholder="Ваше имя или никнейм" required>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Добавить в таблицу</button>
-                            <button type="reset" class="btn btn-secondary">Очистить форму</button>
-                        </div>
-                        
-                        <div id="formSuccess" class="success-message">
-                            ✅ Данные успешно отправлены! Таблица обновится через несколько секунд.
-                        </div>
-                    </form>
+        <div class="rules-section">
+            <div class="rules-box">
+                <h3>📝 Правила добавления информации</h3>
+                <ul>
+                    <li>Вопрос должен быть чётким и конкретным</li>
+                    <li>Ответ должен быть максимально информативным</li>
+                    <li>Указывайте своё имя или никнейм в поле "От кого"</li>
+                    <li>Не используйте нецензурные выражения или оскорбления</li>
+                    <li>Проверьте информацию перед отправкой</li>
+                    <li>Для добавления нового вопроса нажмите кнопку "Добавить вопрос"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Текущие вопросы и ответы</h2>
+                <div class="controls">
+                    <div class="auto-update-indicator">
+                        <div class="indicator-dot"></div>
+                        <span>Автообновление (30 сек)</span>
+                    </div>
+                    <button id="refreshBtn" class="refresh-btn">
+                        <span>↻</span> Обновить
+                    </button>
                 </div>
             </div>
             
-            <!-- Блок с таблицей -->
-            <div class="table-section">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h2>Текущие вопросы и ответы</h2>
-                        <div class="controls">
-                            <div class="auto-update-indicator">
-                                <div class="indicator-dot"></div>
-                                <span>Автообновление (30 сек)</span>
-                            </div>
-                            <button id="refreshBtn" class="refresh-btn">
-                                <span>↻</span> Обновить
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-wrapper">
-                        <table id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th width="5%">№</th>
-                                    <th width="35%">Вопрос</th>
-                                    <th width="50%">Ответ</th>
-                                    <th width="10%">От кого</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <tr>
-                                    <td colspan="4" class="status-message">
-                                        <div class="loading-spinner"></div>
-                                        <p>Загрузка данных из Google Таблицы...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th width="5%">№</th>
+                        <th width="35%">Вопрос</th>
+                        <th width="50%">Ответ</th>
+                        <th width="10%">От кого</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="4" class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Загрузка данных из Google Таблицы...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
         <div class="footer">
@@ -468,6 +365,11 @@
                    target="_blank">
                     Открыть Google Таблицу
                 </a>
+                • 
+                <a href="https://yourmainhero.github.io/Chancellery/" 
+                   target="_blank">
+                    Добавить новый вопрос
+                </a>
             </p>
         </div>
     </div>
@@ -476,13 +378,6 @@
         // Конфигурация
         const SHEET_ID = '1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4';
         const PUBLIC_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-        
-        // Элементы DOM
-        const tableBody = document.getElementById('tableBody');
-        const lastUpdateEl = document.getElementById('lastUpdate');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const addForm = document.getElementById('addForm');
-        const formSuccess = document.getElementById('formSuccess');
         
         // Загрузка данных из Google Sheets
         async function loadGoogleSheetData() {
@@ -521,13 +416,22 @@
                 
                 const columns = parseCSVLine(line);
                 
-                // Добавляем данные только если есть вопрос
-                if (columns.length >= 3 && columns[0].trim() !== '') {
+                // Используем заголовки из Excel-таблицы
+                // Структура столбцов: №, Вопрос, Ответ, От кого
+                if (columns.length >= 4) {
                     rows.push({
+                        number: columns[0] || (index).toString(),
+                        question: columns[1] || '',
+                        answer: columns[2] || '',
+                        author: columns[3] || ''
+                    });
+                } else if (columns.length >= 3) {
+                    // Если нет столбца с номером, генерируем его
+                    rows.push({
+                        number: index.toString(),
                         question: columns[0] || '',
                         answer: columns[1] || '',
-                        author: columns[2] || '',
-                        rowNumber: index + 1
+                        author: columns[2] || ''
                     });
                 }
             });
@@ -547,28 +451,30 @@
                 
                 if (char === '"' && nextChar === '"') {
                     current += '"';
-                    i++; // Пропускаем следующий символ
+                    i++;
                 } else if (char === '"') {
                     inQuotes = !inQuotes;
                 } else if (char === ',' && !inQuotes) {
-                    result.push(current);
+                    result.push(current.trim());
                     current = '';
                 } else {
                     current += char;
                 }
             }
             
-            result.push(current);
+            result.push(current.trim());
             return result;
         }
         
         // Отображение данных в таблице
         function displayData(rows) {
+            const tableBody = document.getElementById('tableBody');
+            
             if (rows.length === 0) {
                 tableBody.innerHTML = 
                     `<tr>
                         <td colspan="4" style="text-align: center; padding: 40px; color: #7f8c8d;">
-                            Нет данных в таблице. Добавьте первый вопрос!
+                            Нет данных в таблице. Нажмите кнопку "Добавить вопрос" выше!
                         </td>
                     </tr>`;
                 return;
@@ -576,10 +482,10 @@
             
             let html = '';
             
-            rows.forEach((row, index) => {
+            rows.forEach((row) => {
                 html += 
                     `<tr>
-                        <td>${index + 1}</td>
+                        <td>${escapeHTML(row.number)}</td>
                         <td>${escapeHTML(row.question)}</td>
                         <td>${escapeHTML(row.answer)}</td>
                         <td>${escapeHTML(row.author)}</td>
@@ -589,11 +495,24 @@
             tableBody.innerHTML = html;
         }
         
+        // Экранирование HTML
+        function escapeHTML(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/\n/g, '<br>');
+        }
+        
         // Показать загрузку
         function showLoading() {
+            const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = 
                 `<tr>
-                    <td colspan="4" class="status-message">
+                    <td colspan="4" class="loading">
                         <div class="loading-spinner"></div>
                         <p>Загрузка данных из Google Таблицы...</p>
                     </td>
@@ -602,9 +521,10 @@
         
         // Показать ошибку
         function showError(message) {
+            const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = 
                 `<tr>
-                    <td colspan="4" class="error-message">
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #e74c3c;">
                         <p style="margin-bottom: 15px;">${message}</p>
                         <button onclick="loadGoogleSheetData()" 
                                 style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -623,51 +543,8 @@
                 second: '2-digit'
             });
             
-            lastUpdateEl.textContent = timeString;
+            document.getElementById('lastUpdate').textContent = timeString;
         }
-        
-        // Экранирование HTML
-        function escapeHTML(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-                .replace(/\n/g, '<br>');
-        }
-        
-        // Обработка отправки формы
-        addForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Получаем данные из формы
-            const question = document.getElementById('question').value;
-            const answer = document.getElementById('answer').value;
-            const author = document.getElementById('author').value;
-            
-            // В реальном приложении здесь будет отправка данных на сервер
-            // или использование Google Apps Script для добавления в таблицу
-            
-            // Показываем сообщение об успехе
-            formSuccess.style.display = 'block';
-            
-            // Очищаем форму
-            addForm.reset();
-            
-            // Скрываем сообщение через 5 секунд
-            setTimeout(() => {
-                formSuccess.style.display = 'none';
-            }, 5000);
-            
-            // Обновляем таблицу через 3 секунды (имитация добавления)
-            setTimeout(() => {
-                loadGoogleSheetData();
-            }, 3000);
-            
-            console.log('Данные для добавления:', { question, answer, author });
-        });
         
         // Автообновление каждые 30 секунд
         function startAutoRefresh() {
@@ -678,11 +555,11 @@
             setInterval(loadGoogleSheetData, 30 * 1000);
         }
         
-        // Ручное обновление по кнопке
-        refreshBtn.addEventListener('click', loadGoogleSheetData);
-        
         // Инициализация
         document.addEventListener('DOMContentLoaded', startAutoRefresh);
+        
+        // Обновление по клику на кнопку
+        document.getElementById('refreshBtn').addEventListener('click', loadGoogleSheetData);
     </script>
 </body>
 </html>
