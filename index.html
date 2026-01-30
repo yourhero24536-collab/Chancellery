@@ -226,14 +226,14 @@
             animation: fadeIn 0.5s;
         }
         
-        .status-message {
-            background: #fff3cd;
-            color: #856404;
+        .info-message {
+            background: #d1ecf1;
+            color: #0c5460;
             padding: 15px;
             border-radius: 6px;
             margin-top: 15px;
             text-align: center;
-            border: 1px solid #ffeaa7;
+            border: 1px solid #bee5eb;
         }
         
         @keyframes fadeIn {
@@ -513,43 +513,49 @@
             <div class="answer-section">
                 <div class="answer-box">
                     <h3>✏️ Ответить на вопрос</h3>
-                    <div class="status-message">
-                        ⚠️ Для работы системы необходимо сделать таблицу общедоступной
+                    <div class="info-message">
+                        ⚠️ Система работает в демо-режиме. Для реальной работы с Google Таблицей 
+                        <a href="#" onclick="setupGoogleSheets()">настройте доступ</a>
                     </div>
                     <form id="answerForm">
                         <div class="form-group">
                             <label for="questionSelect">Выберите вопрос:</label>
-                            <select id="questionSelect" class="question-select" required>
-                                <option value="">-- Выберите вопрос из списка --</option>
+                            <select id="questionSelect" class="question-select">
+                                <option value="">-- Выберите вопрос --</option>
+                                <option value="1">#1 - Иван: Проблема с доступом к материалам</option>
+                                <option value="2">#2 - Мария: Вопрос по расписанию</option>
+                                <option value="3">#3 - Алексей: Технические проблемы</option>
+                                <option value="4">#4 - Анна: Консультация по проекту</option>
+                                <option value="5">#5 - Дмитрий: Вопрос по экзамену</option>
                             </select>
                             <div id="questionDetails" class="question-details">
                                 <div class="detail-row">
                                     <span class="detail-label">Имя:</span>
-                                    <span id="detailName"></span>
+                                    <span id="detailName">Иван Иванов</span>
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Курс/Факультет:</span>
-                                    <span id="detailCourse"></span>
+                                    <span id="detailCourse">3 курс, Факультет информатики</span>
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Срочность:</span>
-                                    <span id="detailUrgency"></span>
+                                    <span id="detailUrgency">Высокая</span>
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Проблема:</span>
-                                    <span id="detailProblem"></span>
+                                    <span id="detailProblem">Нет доступа к учебным материалам на платформе</span>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label for="answerText">Ответ:</label>
-                            <textarea id="answerText" placeholder="Введите подробный ответ..." required></textarea>
+                            <textarea id="answerText" placeholder="Введите подробный ответ..."></textarea>
                         </div>
                         
                         <div class="form-group">
                             <label for="responderName">Кто отвечает:</label>
-                            <input type="text" id="responderName" placeholder="Ваше имя" required>
+                            <input type="text" id="responderName" placeholder="Ваше имя">
                         </div>
                         
                         <div class="form-group">
@@ -560,29 +566,30 @@
                         </div>
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Сохранить ответ</button>
-                            <button type="button" class="btn btn-secondary" id="clearBtn">Очистить</button>
+                            <button type="button" class="btn btn-primary" id="submitBtn" onclick="saveResponse()">Сохранить ответ</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Очистить</button>
                         </div>
                         
                         <div id="successMessage" class="success-message">
-                            ✅ Ответ успешно сохранен!
+                            ✅ Ответ успешно сохранен! Данные будут обновлены.
                         </div>
                         
                         <div id="errorMessage" class="error-message">
-                            ❌ Ошибка при сохранении ответа. Попробуйте еще раз.
+                            ❌ Ошибка при сохранении ответа.
                         </div>
                     </form>
                 </div>
                 
                 <div class="rules-box">
-                    <h3>📋 Инструкция по настройке</h3>
-                    <ol>
-                        <li>Откройте <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" target="_blank">Google Таблицу</a></li>
-                        <li>Нажмите "Настройки доступа" (кнопка "Поделиться")</li>
-                        <li>Измените доступ на "Любой, у кого есть ссылка"</li>
-                        <li>Нажмите "Готово"</li>
-                        <li>Обновите эту страницу</li>
-                    </ol>
+                    <h3>📋 Правила работы</h3>
+                    <ul>
+                        <li>Выберите вопрос из списка</li>
+                        <li>Введите подробный ответ</li>
+                        <li>Укажите своё имя</li>
+                        <li>Поставьте отметку о выполнении</li>
+                        <li>Таблица обновляется каждые 5 минут</li>
+                        <li>Для связи с Google Таблицей требуется настройка доступа</li>
+                    </ul>
                 </div>
             </div>
             
@@ -594,10 +601,10 @@
                         <div class="controls">
                             <div class="auto-update-indicator">
                                 <div class="indicator-dot"></div>
-                                <span>Автообновление: каждые 5 минут</span>
+                                <span>Следующее обновление через: <span id="countdown">5:00</span></span>
                             </div>
-                            <button id="refreshBtn" class="refresh-btn">
-                                <span>↻</span> Обновить сейчас
+                            <button class="refresh-btn" onclick="loadTableData()">
+                                <span>↻</span> Обновить
                             </button>
                         </div>
                     </div>
@@ -617,12 +624,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
-                                <tr>
-                                    <td colspan="8" class="loading">
-                                        <div class="loading-spinner"></div>
-                                        <p>Загрузка данных...</p>
-                                    </td>
-                                </tr>
+                                <!-- Данные будут загружены здесь -->
                             </tbody>
                         </table>
                     </div>
@@ -635,7 +637,6 @@
                 Последнее обновление: <span id="lastUpdate">-</span>
             </div>
             <p style="margin-top: 10px;">
-                Ссылка на таблицу: 
                 <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" target="_blank">
                     Открыть Google Таблицу
                 </a>
@@ -646,129 +647,131 @@
     <script>
         // Конфигурация
         const SHEET_ID = '1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4';
-        
-        // Используем альтернативный способ получения данных
-        const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+        const UPDATE_INTERVAL = 5 * 60 * 1000; // 5 минут
+        let countdownTimer = null;
+        let countdownSeconds = 300; // 5 минут в секундах
         
         // Элементы DOM
         const tableBody = document.getElementById('tableBody');
         const lastUpdateEl = document.getElementById('lastUpdate');
-        const refreshBtn = document.getElementById('refreshBtn');
+        const countdownEl = document.getElementById('countdown');
         const questionSelect = document.getElementById('questionSelect');
-        const answerForm = document.getElementById('answerForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const clearBtn = document.getElementById('clearBtn');
+        const questionDetails = document.getElementById('questionDetails');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
-        const questionDetails = document.getElementById('questionDetails');
-        const markCompleted = document.getElementById('markCompleted');
-        const answerText = document.getElementById('answerText');
-        const responderName = document.getElementById('responderName');
         
-        // Элементы деталей вопроса
-        const detailName = document.getElementById('detailName');
-        const detailCourse = document.getElementById('detailCourse');
-        const detailUrgency = document.getElementById('detailUrgency');
-        const detailProblem = document.getElementById('detailProblem');
+        // Демо-данные
+        const demoData = [
+            {
+                number: '1',
+                completed: false,
+                askerName: 'Иван Иванов',
+                course: '3 курс, Факультет информатики',
+                urgency: 'Высокая',
+                problem: 'Нет доступа к учебным материалам на платформе',
+                answer: '',
+                responder: ''
+            },
+            {
+                number: '2',
+                completed: false,
+                askerName: 'Мария Петрова',
+                course: '2 курс, Факультет экономики',
+                urgency: 'Средняя',
+                problem: 'Вопрос по расписанию занятий на следующую неделю',
+                answer: '',
+                responder: ''
+            },
+            {
+                number: '3',
+                completed: true,
+                askerName: 'Алексей Сидоров',
+                course: '4 курс, Факультет менеджмента',
+                urgency: 'Низкая',
+                problem: 'Технические проблемы с подключением к Wi-Fi',
+                answer: 'Проблема решена, обновите настройки сети',
+                responder: 'Техподдержка'
+            },
+            {
+                number: '4',
+                completed: false,
+                askerName: 'Анна Козлова',
+                course: '1 курс, Факультет дизайна',
+                urgency: 'Высокая',
+                problem: 'Нужна консультация по дипломному проекту',
+                answer: '',
+                responder: ''
+            },
+            {
+                number: '5',
+                completed: false,
+                askerName: 'Дмитрий Волков',
+                course: '5 курс, Медицинский факультет',
+                urgency: 'Средняя',
+                problem: 'Вопрос по датам и формату итогового экзамена',
+                answer: '',
+                responder: ''
+            }
+        ];
         
-        // Данные таблицы
-        let tableData = [];
-        let selectedQuestionNumber = null;
-        let autoRefreshInterval = null;
+        // Сохраненные ответы (в реальном приложении это было бы в Google Sheets)
+        let savedResponses = JSON.parse(localStorage.getItem('question_responses')) || {};
         
-        // Загрузка данных из Google Sheets через opensheet.elk.sh
-        async function loadGoogleSheetData() {
+        // Загрузка данных таблицы
+        function loadTableData() {
             try {
-                showLoading();
+                // Объединяем демо-данные с сохраненными ответами
+                const data = demoData.map(item => {
+                    const savedResponse = savedResponses[item.number];
+                    if (savedResponse) {
+                        return {
+                            ...item,
+                            answer: savedResponse.answer || item.answer,
+                            responder: savedResponse.responder || item.responder,
+                            completed: savedResponse.completed || item.completed
+                        };
+                    }
+                    return item;
+                });
                 
-                // Получаем JSON данные через opensheet
-                const response = await fetch(SHEET_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data || data.length === 0) {
-                    throw new Error('Таблица пуста или данные не получены');
-                }
-                
-                // Преобразуем JSON в наш формат
-                tableData = convertJsonToTableData(data);
-                
-                // Отображаем данные
-                displayData(tableData);
-                
-                // Обновляем выпадающий список с номерами из Excel
-                updateQuestionSelect(tableData);
-                
-                // Обновляем время
+                displayData(data);
                 updateLastUpdateTime();
-                
-                // Включаем кнопку отправки
-                submitBtn.disabled = false;
-                
-                // Запускаем автообновление каждые 5 минут
-                startAutoRefresh();
+                resetCountdown();
                 
             } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                showError(`Не удалось загрузить данные. Проверьте:<br>
-                    1. Сделана ли таблица общедоступной<br>
-                    2. Содержит ли таблица данные<br>
-                    3. Называется ли лист "Sheet1"`);
+                console.error('Ошибка загрузки данных:', error);
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #e74c3c;">
+                            Ошибка загрузки данных. Пожалуйста, обновите страницу.
+                        </td>
+                    </tr>
+                `;
             }
-        }
-        
-        // Конвертация JSON данных в формат таблицы
-        function convertJsonToTableData(jsonData) {
-            const rows = [];
-            
-            jsonData.forEach((row, index) => {
-                // Предполагаем структуру столбцов
-                const questionNumber = row['№'] || row['Номер'] || row['Number'] || (index + 1).toString();
-                
-                rows.push({
-                    rowNumber: index + 2, // +2 потому что первая строка - заголовки
-                    number: questionNumber.toString(),
-                    completed: row['Выполнено'] || row['Отметка о выполнении'] || row['Completed'] || '',
-                    askerName: row['Имя'] || row['Кто задал'] || row['Name'] || '',
-                    course: row['Курс'] || row['Факультет'] || row['Course'] || '',
-                    urgency: row['Срочность'] || row['Urgency'] || '',
-                    problem: row['Проблема'] || row['Вопрос'] || row['Problem'] || '',
-                    answer: row['Ответ'] || row['Answer'] || '',
-                    responder: row['Кто ответил'] || row['Ответил'] || row['Responder'] || '',
-                    hasAnswer: (row['Ответ'] || row['Answer'] || '').trim() !== ''
-                });
-            });
-            
-            return rows;
         }
         
         // Отображение данных в таблице
         function displayData(data) {
-            if (data.length === 0) {
-                tableBody.innerHTML = 
-                    `<tr>
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
                         <td colspan="8" style="text-align: center; padding: 40px; color: #7f8c8d;">
-                            Нет данных в таблице. Добавьте данные в Google Таблицу.
+                            Нет данных для отображения
                         </td>
-                    </tr>`;
+                    </tr>
+                `;
                 return;
             }
             
             let html = '';
             
             data.forEach((row) => {
-                const rowClass = (row.completed && row.completed.toString().toLowerCase().includes('да')) ? 
-                    'completed-row' : (row.hasAnswer ? 'answered-row' : '');
-                const selectedClass = row.number === selectedQuestionNumber ? 'selected-row' : '';
+                const rowClass = row.completed ? 'completed-row' : (row.answer ? 'answered-row' : '');
                 
                 // Определяем класс срочности
                 let urgencyClass = 'urgency-low';
                 if (row.urgency) {
-                    const urgencyLower = row.urgency.toString().toLowerCase();
+                    const urgencyLower = row.urgency.toLowerCase();
                     if (urgencyLower.includes('высок') || urgencyLower.includes('high') || urgencyLower.includes('срочн')) {
                         urgencyClass = 'urgency-high';
                     } else if (urgencyLower.includes('сред') || urgencyLower.includes('medium')) {
@@ -776,17 +779,17 @@
                     }
                 }
                 
-                html += 
-                    `<tr class="${rowClass} ${selectedClass}" data-number="${row.number}">
+                html += `
+                    <tr class="${rowClass}">
                         <td>${escapeHTML(row.number)}</td>
                         <td class="status-cell">
-                            ${row.completed && row.completed.toString().toLowerCase().includes('да') ? 
+                            ${row.completed ? 
                                 '<span class="completed-check">✓</span>' : 
-                                '<input type="checkbox" class="status-checkbox" onclick="toggleCompletion(\'' + row.number + '\')"' + 
-                                (row.completed && row.completed.toString().toLowerCase().includes('да') ? ' checked' : '') + '>'
+                                '<input type="checkbox" class="status-checkbox" onclick="toggleCompletion(' + row.number + ')"' + 
+                                (row.completed ? ' checked' : '') + '>'
                             }
                         </td>
-                        <td class="question-cell" onclick="selectQuestionFromTable('${row.number}')">
+                        <td class="question-cell" onclick="selectQuestion(${row.number})">
                             ${escapeHTML(row.askerName)}
                         </td>
                         <td>${escapeHTML(row.course)}</td>
@@ -796,7 +799,7 @@
                                 '<span class="empty-cell">—</span>'
                             }
                         </td>
-                        <td class="question-cell" onclick="selectQuestionFromTable('${row.number}')">
+                        <td class="question-cell" onclick="selectQuestion(${row.number})">
                             ${escapeHTML(row.problem)}
                         </td>
                         <td>
@@ -811,251 +814,137 @@
                                 '<span class="empty-cell">—</span>'
                             }
                         </td>
-                    </tr>`;
+                    </tr>
+                `;
             });
             
             tableBody.innerHTML = html;
         }
         
-        // Обновление выпадающего списка с номерами из Excel
-        function updateQuestionSelect(data) {
-            // Очищаем список, кроме первого элемента
-            while (questionSelect.options.length > 1) {
-                questionSelect.remove(1);
-            }
-            
-            // Добавляем вопросы без ответов или не выполненные
-            data.forEach((row) => {
-                const isCompleted = row.completed && row.completed.toString().toLowerCase().includes('да');
-                if (!isCompleted && (!row.hasAnswer || row.answer.trim() === '')) {
-                    const option = document.createElement('option');
-                    option.value = row.number;
-                    const problemPreview = row.problem.length > 40 ? 
-                        row.problem.substring(0, 40) + '...' : row.problem;
-                    option.textContent = `#${row.number} - ${row.askerName}: ${problemPreview}`;
-                    questionSelect.appendChild(option);
-                }
-            });
-            
-            // Если нет вопросов для ответа
-            if (questionSelect.options.length === 1) {
-                const option = document.createElement('option');
-                option.value = "";
-                option.textContent = "Все вопросы обработаны";
-                questionSelect.appendChild(option);
-                questionSelect.disabled = true;
-            } else {
-                questionSelect.disabled = false;
-            }
-        }
-        
-        // Выбор вопроса из таблицы
-        function selectQuestionFromTable(number) {
-            selectedQuestionNumber = number;
-            const question = tableData.find(row => row.number === number);
-            
+        // Выбор вопроса
+        function selectQuestion(number) {
+            const question = demoData.find(q => q.number === number.toString());
             if (question) {
                 // Обновляем выпадающий список
                 questionSelect.value = number;
                 
                 // Заполняем детали вопроса
-                detailName.textContent = question.askerName || '—';
-                detailCourse.textContent = question.course || '—';
-                detailUrgency.textContent = question.urgency || '—';
-                detailProblem.textContent = question.problem || '—';
+                document.getElementById('detailName').textContent = question.askerName;
+                document.getElementById('detailCourse').textContent = question.course;
+                document.getElementById('detailUrgency').textContent = question.urgency;
+                document.getElementById('detailProblem').textContent = question.problem;
                 
-                // Заполняем форму если есть ответ
-                if (question.answer) {
-                    answerText.value = question.answer;
-                    responderName.value = question.responder || '';
-                    markCompleted.checked = question.completed && question.completed.toString().toLowerCase().includes('да');
+                // Заполняем форму сохраненными данными
+                const savedResponse = savedResponses[number];
+                if (savedResponse) {
+                    document.getElementById('answerText').value = savedResponse.answer || '';
+                    document.getElementById('responderName').value = savedResponse.responder || '';
+                    document.getElementById('markCompleted').checked = savedResponse.completed || false;
                 } else {
-                    answerText.value = '';
-                    responderName.value = '';
-                    markCompleted.checked = false;
+                    document.getElementById('answerText').value = '';
+                    document.getElementById('responderName').value = '';
+                    document.getElementById('markCompleted').checked = false;
                 }
                 
                 // Показываем детали
                 questionDetails.style.display = 'block';
                 
-                // Обновляем отображение таблицы
-                displayData(tableData);
+                // Прокручиваем к форме
+                document.querySelector('.answer-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Обработчик изменения выпадающего списка
+        questionSelect.addEventListener('change', function() {
+            if (this.value) {
+                selectQuestion(parseInt(this.value));
+            } else {
+                questionDetails.style.display = 'none';
+            }
+        });
+        
+        // Сохранение ответа
+        function saveResponse() {
+            const questionNumber = questionSelect.value;
+            const answer = document.getElementById('answerText').value.trim();
+            const responder = document.getElementById('responderName').value.trim();
+            const completed = document.getElementById('markCompleted').checked;
+            
+            if (!questionNumber) {
+                showError('Выберите вопрос');
+                return;
+            }
+            
+            if (!answer || !responder) {
+                showError('Заполните все поля');
+                return;
+            }
+            
+            try {
+                // Сохраняем локально
+                savedResponses[questionNumber] = {
+                    answer: answer,
+                    responder: responder,
+                    completed: completed,
+                    timestamp: new Date().toISOString()
+                };
                 
-                // Фокус на поле ответа
-                answerText.focus();
+                localStorage.setItem('question_responses', JSON.stringify(savedResponses));
+                
+                // Показываем успешное сообщение
+                showSuccess('Ответ сохранен');
+                
+                // Обновляем таблицу
+                loadTableData();
+                
+                // Очищаем форму через 2 секунды
+                setTimeout(() => {
+                    clearForm();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                showError('Ошибка при сохранении');
             }
         }
         
         // Переключение статуса выполнения
         function toggleCompletion(number) {
-            const question = tableData.find(row => row.number === number);
-            if (question) {
-                const currentStatus = question.completed && question.completed.toString().toLowerCase().includes('да');
-                question.completed = currentStatus ? 'Нет' : 'Да';
-                
-                // Обновляем таблицу
-                displayData(tableData);
-                
-                // Если это выбранный вопрос, обновляем чекбокс в форме
-                if (number === selectedQuestionNumber) {
-                    markCompleted.checked = !currentStatus;
-                }
-                
-                // Показываем сообщение
-                showSuccessMessage(`Статус вопроса #${number} изменен на "${question.completed}"`);
+            if (!savedResponses[number]) {
+                savedResponses[number] = {};
             }
+            
+            savedResponses[number].completed = !savedResponses[number].completed;
+            localStorage.setItem('question_responses', JSON.stringify(savedResponses));
+            
+            loadTableData();
         }
         
-        // Обработчик выбора вопроса из выпадающего списка
-        questionSelect.addEventListener('change', function() {
-            if (this.value) {
-                selectQuestionFromTable(this.value);
-            } else {
-                selectedQuestionNumber = null;
-                questionDetails.style.display = 'none';
-                displayData(tableData);
-            }
-        });
-        
-        // Обработчик отправки формы
-        answerForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!selectedQuestionNumber) {
-                showErrorMessage('Выберите вопрос для ответа');
-                return;
-            }
-            
-            const answer = answerText.value.trim();
-            const responder = responderName.value.trim();
-            const completed = markCompleted.checked ? 'Да' : 'Нет';
-            
-            if (!answer || !responder) {
-                showErrorMessage('Заполните все обязательные поля');
-                return;
-            }
-            
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Сохранение...';
-                
-                // Находим вопрос
-                const question = tableData.find(row => row.number === selectedQuestionNumber);
-                if (!question) {
-                    throw new Error('Вопрос не найден');
-                }
-                
-                // Обновляем локальные данные
-                question.answer = answer;
-                question.responder = responder;
-                question.completed = completed;
-                question.hasAnswer = true;
-                
-                // Показываем успешное сообщение
-                showSuccessMessage(`Ответ на вопрос #${selectedQuestionNumber} сохранен`);
-                
-                // Обновляем отображение
-                displayData(tableData);
-                updateQuestionSelect(tableData);
-                
-                // Очищаем форму
-                setTimeout(() => {
-                    answerForm.reset();
-                    questionDetails.style.display = 'none';
-                    selectedQuestionNumber = null;
-                    questionSelect.value = "";
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Ошибка сохранения:', error);
-                showErrorMessage(`Ошибка при сохранении: ${error.message}`);
-                
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Сохранить ответ';
-            }
-        });
-        
         // Очистка формы
-        clearBtn.addEventListener('click', function() {
-            answerForm.reset();
+        function clearForm() {
+            document.getElementById('answerForm').reset();
             questionDetails.style.display = 'none';
-            selectedQuestionNumber = null;
-            questionSelect.value = "";
-            displayData(tableData);
+            questionSelect.value = '';
             successMessage.style.display = 'none';
             errorMessage.style.display = 'none';
-        });
+        }
+        
+        // Показать успешное сообщение
+        function showSuccess(message) {
+            successMessage.textContent = `✅ ${message}`;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
         
         // Показать сообщение об ошибке
-        function showErrorMessage(message) {
-            errorMessage.innerHTML = `❌ ${message}`;
+        function showError(message) {
+            errorMessage.textContent = `❌ ${message}`;
             errorMessage.style.display = 'block';
             successMessage.style.display = 'none';
             
             setTimeout(() => {
                 errorMessage.style.display = 'none';
-            }, 5000);
-        }
-        
-        // Показать успешное сообщение
-        function showSuccessMessage(message) {
-            successMessage.innerHTML = `✅ ${message}`;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-            
-            setTimeout(() => {
-                successMessage.style.display = 'none';
             }, 3000);
-        }
-        
-        // Показать ошибку загрузки
-        function showError(message) {
-            tableBody.innerHTML = 
-                `<tr>
-                    <td colspan="8" style="text-align: center; padding: 40px; color: #e74c3c;">
-                        <p style="margin-bottom: 15px;">${message}</p>
-                        <button onclick="loadGoogleSheetData()" 
-                                style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            Попробовать снова
-                        </button>
-                    </td>
-                </tr>`;
-        }
-        
-        // Показать загрузку
-        function showLoading() {
-            tableBody.innerHTML = 
-                `<tr>
-                    <td colspan="8" class="loading">
-                        <div class="loading-spinner"></div>
-                        <p>Загрузка данных...</p>
-                    </td>
-                </tr>`;
-        }
-        
-        // Запуск автообновления
-        function startAutoRefresh() {
-            // Останавливаем предыдущий интервал если есть
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            // Устанавливаем автообновление каждые 5 минут (300000 мс)
-            autoRefreshInterval = setInterval(loadGoogleSheetData, 5 * 60 * 1000);
-        }
-        
-        // Экранирование HTML
-        function escapeHTML(text) {
-            if (!text) return '';
-            const textStr = String(text);
-            return textStr
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-                .replace(/\n/g, '<br>');
         }
         
         // Обновить время последнего обновления
@@ -1070,13 +959,74 @@
             lastUpdateEl.textContent = timeString;
         }
         
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            // Загружаем данные сразу
-            loadGoogleSheetData();
+        // Сброс таймера обновления
+        function resetCountdown() {
+            clearInterval(countdownTimer);
+            countdownSeconds = 300;
+            updateCountdownDisplay();
             
-            // Настраиваем обновление по кнопке
-            refreshBtn.addEventListener('click', loadGoogleSheetData);
+            countdownTimer = setInterval(() => {
+                countdownSeconds--;
+                updateCountdownDisplay();
+                
+                if (countdownSeconds <= 0) {
+                    loadTableData();
+                }
+            }, 1000);
+        }
+        
+        // Обновление отображения таймера
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(countdownSeconds / 60);
+            const seconds = countdownSeconds % 60;
+            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Настройка Google Sheets (инструкция)
+        function setupGoogleSheets() {
+            const instructions = `
+                Для подключения к Google Таблице необходимо:
+                
+                1. Открыть Google Таблицу по ссылке выше
+                2. Нажать "Настройки доступа"
+                3. Выбрать "Любой, у кого есть ссылка"
+                4. Выбрать роль "Редактор"
+                5. Скопировать ID таблицы: ${SHEET_ID}
+                
+                Затем заменить в коде:
+                const SHEET_ID = '${SHEET_ID}';
+                
+                И использовать Google Apps Script для обработки данных.
+            `;
+            
+            alert(instructions);
+        }
+        
+        // Экранирование HTML
+        function escapeHTML(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/\n/g, '<br>');
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем данные
+            loadTableData();
+            
+            // Автоматическое обновление каждые 5 минут
+            setInterval(loadTableData, UPDATE_INTERVAL);
+            
+            // Заполняем выпадающий список демо-вопросами
+            questionSelect.innerHTML = '<option value="">-- Выберите вопрос --</option>' +
+                demoData.filter(q => !q.answer).map(q => 
+                    `<option value="${q.number}">#${q.number} - ${q.askerName}: ${q.problem.substring(0, 50)}...</option>`
+                ).join('');
         });
     </script>
 </body>
