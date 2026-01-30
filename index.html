@@ -172,12 +172,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            flex: 1;
         }
         
         .btn-primary {
             background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
+            flex: 1;
         }
         
         .btn-primary:hover:not(:disabled) {
@@ -195,20 +195,11 @@
         .btn-secondary {
             background: #ecf0f1;
             color: #2c3e50;
+            flex: 1;
         }
         
         .btn-secondary:hover {
             background: #d5dbdb;
-        }
-        
-        .btn-save {
-            background: linear-gradient(to right, #2ecc71, #27ae60);
-            color: white;
-            flex: 0.5;
-        }
-        
-        .btn-save:hover {
-            background: linear-gradient(to right, #27ae60, #219653);
         }
         
         .success-message {
@@ -235,32 +226,21 @@
             animation: fadeIn 0.5s;
         }
         
-        .auto-save-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #7f8c8d;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-        
-        .auto-save-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2ecc71;
-            animation: pulse 1.5s infinite;
+        .loading-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            border: 1px solid #ffeaa7;
+            animation: fadeIn 0.5s;
         }
         
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
         }
         
         .table-section {
@@ -331,6 +311,12 @@
             animation: pulse 2s infinite;
         }
         
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
         .table-wrapper {
             overflow-x: auto;
             flex-grow: 1;
@@ -383,17 +369,6 @@
         
         .answered-row {
             background-color: #f0f9ff;
-        }
-        
-        .saving-row {
-            background-color: #fffde7 !important;
-            animation: savingAnimation 1s infinite;
-        }
-        
-        @keyframes savingAnimation {
-            0% { background-color: #fffde7; }
-            50% { background-color: #fff9c4; }
-            100% { background-color: #fffde7; }
         }
         
         td {
@@ -568,16 +543,12 @@
                         
                         <div class="form-group">
                             <label for="answerText">Ответ:</label>
-                            <textarea id="answerText" placeholder="Введите подробный ответ..."></textarea>
-                            <div class="auto-save-indicator">
-                                <div class="auto-save-dot"></div>
-                                <span>Автосохранение при изменении</span>
-                            </div>
+                            <textarea id="answerText" placeholder="Введите подробный ответ..." required></textarea>
                         </div>
                         
                         <div class="form-group">
                             <label for="responderName">Кто отвечает:</label>
-                            <input type="text" id="responderName" placeholder="Ваше имя">
+                            <input type="text" id="responderName" placeholder="Ваше имя" required>
                         </div>
                         
                         <div class="form-group">
@@ -588,13 +559,16 @@
                         </div>
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" id="submitBtn">Сохранить ответ</button>
-                            <button type="button" class="btn btn-save" id="saveBtn">Сохранить сейчас</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Сохранить ответ в таблицу</button>
                             <button type="button" class="btn btn-secondary" id="clearBtn">Очистить</button>
                         </div>
                         
+                        <div id="loadingMessage" class="loading-message">
+                            ⏳ Сохранение данных в Google Таблицу...
+                        </div>
+                        
                         <div id="successMessage" class="success-message">
-                            ✅ Ответ успешно сохранен! Таблица обновится через несколько секунд.
+                            ✅ Ответ успешно сохранен в Google Таблицу!
                         </div>
                         
                         <div id="errorMessage" class="error-message">
@@ -606,12 +580,12 @@
                 <div class="rules-box">
                     <h3>📋 Правила работы</h3>
                     <ul>
-                        <li>Выберите вопрос из списка или кликните по нему в таблице</li>
-                        <li>Ответы сохраняются автоматически при изменении</li>
-                        <li>Данные сохраняются локально и не теряются при обновлении</li>
-                        <li>Можно также сохранить ответ вручную кнопкой "Сохранить сейчас"</li>
+                        <li>Выберите вопрос из списка (номера из Excel)</li>
+                        <li>Введите подробный ответ</li>
+                        <li>Укажите своё имя</li>
+                        <li>Ответ сохраняется напрямую в Google Таблицу</li>
+                        <li>Таблица обновляется автоматически каждые 5 минут</li>
                         <li>Выполненные вопросы выделяются зеленым цветом</li>
-                        <li>Таблица автоматически обновляется каждые 30 секунд</li>
                     </ul>
                 </div>
             </div>
@@ -624,10 +598,10 @@
                         <div class="controls">
                             <div class="auto-update-indicator">
                                 <div class="indicator-dot"></div>
-                                <span>Автообновление (30 сек)</span>
+                                <span>Следующее обновление через: <span id="countdown">5:00</span></span>
                             </div>
                             <button id="refreshBtn" class="refresh-btn">
-                                <span>↻</span> Обновить
+                                <span>↻</span> Обновить сейчас
                             </button>
                         </div>
                     </div>
@@ -664,10 +638,10 @@
             <div class="update-info">
                 Последнее обновление: <span id="lastUpdate">-</span>
                 <br>
-                <small>Локальные изменения сохраняются автоматически</small>
+                <small>Следующее обновление через: <span id="nextUpdateCountdown">5:00</span></small>
             </div>
             <p style="margin-top: 10px;">
-                Система автоматически синхронизируется с Google Таблицей
+                Данные сохраняются напрямую в <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" target="_blank">Google Таблицу</a>
             </p>
         </div>
     </div>
@@ -676,7 +650,7 @@
         // Конфигурация
         const SHEET_ID = '1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4';
         const PUBLIC_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-        const STORAGE_KEY = 'question_responses';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9S1axXvEL2d6QLPZOm4GgUxn21xMDFyK-WxYMcMZkXk5MWKw1s0F2m7KMnrFzNgUc/exec';
         
         // Элементы DOM
         const tableBody = document.getElementById('tableBody');
@@ -685,14 +659,16 @@
         const questionSelect = document.getElementById('questionSelect');
         const answerForm = document.getElementById('answerForm');
         const submitBtn = document.getElementById('submitBtn');
-        const saveBtn = document.getElementById('saveBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const loadingMessage = document.getElementById('loadingMessage');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const questionDetails = document.getElementById('questionDetails');
         const markCompleted = document.getElementById('markCompleted');
         const answerText = document.getElementById('answerText');
         const responderName = document.getElementById('responderName');
+        const countdownEl = document.getElementById('countdown');
+        const nextUpdateCountdownEl = document.getElementById('nextUpdateCountdown');
         
         // Элементы деталей вопроса
         const detailName = document.getElementById('detailName');
@@ -702,55 +678,10 @@
         
         // Данные таблицы
         let tableData = [];
-        let selectedQuestionId = null;
-        let autoSaveTimeout = null;
-        let localResponses = {};
-        
-        // Загрузка локальных сохранений при старте
-        function loadLocalResponses() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    localResponses = JSON.parse(saved);
-                    console.log('Загружены локальные сохранения:', localResponses);
-                } catch (e) {
-                    console.error('Ошибка загрузки локальных сохранений:', e);
-                    localResponses = {};
-                }
-            }
-        }
-        
-        // Сохранение локальных ответов
-        function saveLocalResponses() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(localResponses));
-                console.log('Локальные сохранения обновлены');
-            } catch (e) {
-                console.error('Ошибка сохранения локальных данных:', e);
-            }
-        }
-        
-        // Сохранение ответа локально
-        function saveResponseLocally(questionId, responseData) {
-            if (!questionId) return;
-            
-            localResponses[questionId] = {
-                ...responseData,
-                timestamp: new Date().toISOString(),
-                saved: true
-            };
-            
-            saveLocalResponses();
-            
-            // Показать индикатор сохранения в таблице
-            const row = document.querySelector(`tr[data-id="${questionId}"]`);
-            if (row) {
-                row.classList.add('saving-row');
-                setTimeout(() => {
-                    row.classList.remove('saving-row');
-                }, 1000);
-            }
-        }
+        let selectedQuestionNumber = null;
+        let autoRefreshInterval = null;
+        let countdownInterval = null;
+        let countdownTime = 300; // 5 минут в секундах
         
         // Загрузка данных из Google Sheets
         async function loadGoogleSheetData() {
@@ -764,17 +695,17 @@
                 // Парсим CSV
                 tableData = parseCSV(csvText);
                 
-                // Объединяем с локальными данными
-                mergeLocalDataWithTableData();
-                
                 // Отображаем данные
                 displayData(tableData);
                 
-                // Обновляем выпадающий список
+                // Обновляем выпадающий список с номерами из Excel
                 updateQuestionSelect(tableData);
                 
                 // Обновляем время
                 updateLastUpdateTime();
+                
+                // Сбрасываем таймер обновления
+                resetAutoRefresh();
                 
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
@@ -782,45 +713,30 @@
             }
         }
         
-        // Объединение локальных данных с данными из таблицы
-        function mergeLocalDataWithTableData() {
-            tableData.forEach(question => {
-                const localResponse = localResponses[question.id];
-                if (localResponse) {
-                    // Обновляем ответ и того кто ответил из локальных данных
-                    if (localResponse.answer) {
-                        question.answer = localResponse.answer;
-                        question.hasAnswer = true;
-                    }
-                    if (localResponse.responder) {
-                        question.responder = localResponse.responder;
-                    }
-                    if (localResponse.completed !== undefined) {
-                        question.completed = localResponse.completed;
-                    }
-                }
-            });
-        }
-        
         // Парсинг CSV
         function parseCSV(csvText) {
             const rows = [];
             const lines = csvText.split('\n');
             
-            lines.forEach((line, index) => {
-                if (line.trim() === '') return;
-                
-                // Пропускаем первую строку (заголовки)
-                if (index === 0) return;
+            // Определяем заголовки из первой строки
+            let headers = [];
+            if (lines.length > 0) {
+                headers = parseCSVLine(lines[0]);
+            }
+            
+            // Парсим остальные строки
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.trim() === '') continue;
                 
                 const columns = parseCSVLine(line);
                 
                 // Столбцы: №, Отметка о выполнении, Имя, Курс/Факультет, Срочность, Проблема, Ответ, Кто ответил
                 if (columns.length >= 6) {
-                    const rowId = `row_${index}`;
+                    const questionNumber = columns[0] || (i).toString();
                     rows.push({
-                        id: rowId,
-                        number: columns[0] || (index).toString(),
+                        rowNumber: i + 1, // Номер строки в таблице (для Google Sheets)
+                        number: questionNumber,
                         completed: columns[1] && (columns[1].toLowerCase().trim() === 'да' || columns[1] === '✓' || columns[1] === 'true'),
                         askerName: columns[2] || '',
                         course: columns[3] || '',
@@ -828,11 +744,10 @@
                         problem: columns[5] || '',
                         answer: columns.length > 6 ? columns[6] : '',
                         responder: columns.length > 7 ? columns[7] : '',
-                        hasAnswer: columns.length > 6 && columns[6] && columns[6].trim() !== '',
-                        rowIndex: index
+                        hasAnswer: columns.length > 6 && columns[6] && columns[6].trim() !== ''
                     });
                 }
-            });
+            }
             
             return rows;
         }
@@ -880,34 +795,30 @@
             
             data.forEach((row) => {
                 const rowClass = row.completed ? 'completed-row' : (row.hasAnswer ? 'answered-row' : '');
-                const selectedClass = row.id === selectedQuestionId ? 'selected-row' : '';
-                
-                // Проверяем локальные сохранения
-                const hasLocalSave = localResponses[row.id];
-                const isSaving = hasLocalSave && hasLocalSave.saved;
+                const selectedClass = row.number === selectedQuestionNumber ? 'selected-row' : '';
                 
                 // Определяем класс срочности
                 let urgencyClass = 'urgency-low';
                 if (row.urgency) {
-                    if (row.urgency.toLowerCase().includes('высок') || row.urgency.toLowerCase().includes('high')) {
+                    const urgencyLower = row.urgency.toLowerCase();
+                    if (urgencyLower.includes('высок') || urgencyLower.includes('high') || urgencyLower.includes('срочн')) {
                         urgencyClass = 'urgency-high';
-                    } else if (row.urgency.toLowerCase().includes('сред') || row.urgency.toLowerCase().includes('medium')) {
+                    } else if (urgencyLower.includes('сред') || urgencyLower.includes('medium')) {
                         urgencyClass = 'urgency-medium';
                     }
                 }
                 
                 html += 
-                    `<tr class="${rowClass} ${selectedClass} ${isSaving ? 'saving-row' : ''}" data-id="${row.id}">
+                    `<tr class="${rowClass} ${selectedClass}" data-number="${row.number}">
                         <td>${escapeHTML(row.number)}</td>
                         <td class="status-cell">
                             ${row.completed ? 
                                 '<span class="completed-check">✓</span>' : 
-                                '<input type="checkbox" class="status-checkbox" onclick="toggleCompletion(\'' + row.id + '\')"' + (row.completed ? ' checked' : '') + '>'
+                                '<input type="checkbox" class="status-checkbox" onclick="toggleCompletion(\'' + row.number + '\')"' + (row.completed ? ' checked' : '') + '>'
                             }
                         </td>
-                        <td class="question-cell" onclick="selectQuestionFromTable('${row.id}')">
+                        <td class="question-cell" onclick="selectQuestionFromTable('${row.number}')">
                             ${escapeHTML(row.askerName)}
-                            ${hasLocalSave ? ' 💾' : ''}
                         </td>
                         <td>${escapeHTML(row.course)}</td>
                         <td>
@@ -916,12 +827,12 @@
                                 '<span class="empty-cell">—</span>'
                             }
                         </td>
-                        <td class="question-cell" onclick="selectQuestionFromTable('${row.id}')">
+                        <td class="question-cell" onclick="selectQuestionFromTable('${row.number}')">
                             ${escapeHTML(row.problem)}
                         </td>
                         <td>
                             ${row.answer ? 
-                                escapeHTML(row.answer) + (hasLocalSave ? ' <small style="color:#2ecc71">(сохранено)</small>' : '') : 
+                                escapeHTML(row.answer) : 
                                 '<span class="empty-cell">Ожидает ответа</span>'
                             }
                         </td>
@@ -937,22 +848,21 @@
             tableBody.innerHTML = html;
         }
         
-        // Обновление выпадающего списка вопросов
+        // Обновление выпадающего списка с номерами из Excel
         function updateQuestionSelect(data) {
             // Очищаем список, кроме первого элемента
             while (questionSelect.options.length > 1) {
                 questionSelect.remove(1);
             }
             
-            // Добавляем вопросы, которые еще не имеют ответов или не выполнены
+            // Добавляем вопросы без ответов или не выполненные
             data.forEach((row) => {
-                if (!row.completed) {
+                if (!row.completed && (!row.hasAnswer || row.answer.trim() === '')) {
                     const option = document.createElement('option');
-                    option.value = row.id;
+                    option.value = row.number;
                     const problemPreview = row.problem.length > 40 ? 
                         row.problem.substring(0, 40) + '...' : row.problem;
-                    const hasLocal = localResponses[row.id] ? ' 💾' : '';
-                    option.textContent = `#${row.number} ${row.askerName}: ${problemPreview}${hasLocal}`;
+                    option.textContent = `#${row.number} - ${row.askerName}: ${problemPreview}`;
                     questionSelect.appendChild(option);
                 }
             });
@@ -965,22 +875,20 @@
                 questionSelect.appendChild(option);
                 questionSelect.disabled = true;
                 submitBtn.disabled = true;
-                saveBtn.disabled = true;
             } else {
                 questionSelect.disabled = false;
                 submitBtn.disabled = false;
-                saveBtn.disabled = false;
             }
         }
         
         // Выбор вопроса из таблицы
-        function selectQuestionFromTable(id) {
-            selectedQuestionId = id;
-            const question = tableData.find(row => row.id === id);
+        function selectQuestionFromTable(number) {
+            selectedQuestionNumber = number;
+            const question = tableData.find(row => row.number === number);
             
             if (question) {
                 // Обновляем выпадающий список
-                questionSelect.value = id;
+                questionSelect.value = number;
                 
                 // Заполняем детали вопроса
                 detailName.textContent = question.askerName || '—';
@@ -988,18 +896,15 @@
                 detailUrgency.textContent = question.urgency || '—';
                 detailProblem.textContent = question.problem || '—';
                 
-                // Проверяем локальные сохранения
-                const localResponse = localResponses[id];
-                
-                // Заполняем форму данными (локальные имеют приоритет)
-                if (localResponse) {
-                    answerText.value = localResponse.answer || '';
-                    responderName.value = localResponse.responder || '';
-                    markCompleted.checked = localResponse.completed || false;
-                } else {
-                    answerText.value = question.answer || '';
+                // Заполняем форму если есть ответ
+                if (question.answer) {
+                    answerText.value = question.answer;
                     responderName.value = question.responder || '';
-                    markCompleted.checked = question.completed || false;
+                    markCompleted.checked = question.completed;
+                } else {
+                    answerText.value = '';
+                    responderName.value = '';
+                    markCompleted.checked = false;
                 }
                 
                 // Показываем детали
@@ -1013,82 +918,48 @@
             }
         }
         
-        // Автосохранение при изменении полей
-        function setupAutoSave() {
-            answerText.addEventListener('input', () => {
-                scheduleAutoSave();
-            });
-            
-            responderName.addEventListener('input', () => {
-                scheduleAutoSave();
-            });
-            
-            markCompleted.addEventListener('change', () => {
-                scheduleAutoSave();
-            });
-        }
-        
-        // Планирование автосохранения
-        function scheduleAutoSave() {
-            if (!selectedQuestionId) return;
-            
-            if (autoSaveTimeout) {
-                clearTimeout(autoSaveTimeout);
-            }
-            
-            autoSaveTimeout = setTimeout(() => {
-                performAutoSave();
-            }, 1000);
-        }
-        
-        // Выполнение автосохранения
-        function performAutoSave() {
-            if (!selectedQuestionId) return;
-            
-            const answer = answerText.value.trim();
-            const responder = responderName.value.trim();
-            const completed = markCompleted.checked;
-            
-            // Сохраняем локально
-            saveResponseLocally(selectedQuestionId, {
-                answer,
-                responder,
-                completed
-            });
-            
-            // Обновляем отображение таблицы
-            const question = tableData.find(row => row.id === selectedQuestionId);
-            if (question) {
-                question.answer = answer;
-                question.responder = responder;
-                question.completed = completed;
-                question.hasAnswer = answer.length > 0;
-                
-                displayData(tableData);
-            }
-            
-            console.log('Автосохранение выполнено для вопроса:', selectedQuestionId);
-        }
-        
         // Переключение статуса выполнения
-        function toggleCompletion(id) {
-            const question = tableData.find(row => row.id === id);
+        function toggleCompletion(number) {
+            const question = tableData.find(row => row.number === number);
             if (question) {
                 question.completed = !question.completed;
-                
-                // Сохраняем локально
-                saveResponseLocally(id, {
-                    ...localResponses[id],
-                    completed: question.completed
-                });
                 
                 // Обновляем таблицу
                 displayData(tableData);
                 
                 // Если это выбранный вопрос, обновляем чекбокс в форме
-                if (id === selectedQuestionId) {
+                if (number === selectedQuestionNumber) {
                     markCompleted.checked = question.completed;
                 }
+                
+                // Сохраняем в Google Таблицу
+                saveCompletionStatus(question);
+            }
+        }
+        
+        // Сохранение статуса выполнения в Google Таблицу
+        async function saveCompletionStatus(question) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateStatus',
+                        rowNumber: question.rowNumber,
+                        completed: question.completed ? 'Да' : 'Нет'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log('Статус обновлен в таблице');
+                } else {
+                    console.error('Ошибка обновления статуса:', result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка отправки статуса:', error);
             }
         }
         
@@ -1097,26 +968,17 @@
             if (this.value) {
                 selectQuestionFromTable(this.value);
             } else {
-                selectedQuestionId = null;
+                selectedQuestionNumber = null;
                 questionDetails.style.display = 'none';
                 displayData(tableData);
             }
         });
         
-        // Обработчик отправки формы (сохранение)
+        // Обработчик отправки формы
         answerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            await saveCurrentResponse();
-        });
-        
-        // Обработчик кнопки "Сохранить сейчас"
-        saveBtn.addEventListener('click', async function() {
-            await saveCurrentResponse(true);
-        });
-        
-        // Сохранение текущего ответа
-        async function saveCurrentResponse(showMessage = true) {
-            if (!selectedQuestionId) {
+            
+            if (!selectedQuestionNumber) {
                 showError('Выберите вопрос для ответа');
                 return;
             }
@@ -1131,4 +993,129 @@
             }
             
             try {
-                submitBtn.disabled = true
+                // Показываем индикатор загрузки
+                loadingMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                submitBtn.disabled = true;
+                
+                // Находим вопрос
+                const question = tableData.find(row => row.number === selectedQuestionNumber);
+                if (!question) {
+                    throw new Error('Вопрос не найден');
+                }
+                
+                // Отправляем данные в Google Таблицу через Apps Script
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateAnswer',
+                        rowNumber: question.rowNumber,
+                        answer: answer,
+                        responder: responder,
+                        completed: completed ? 'Да' : 'Нет'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Показываем успешное сообщение
+                    loadingMessage.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Обновляем локальные данные
+                    question.answer = answer;
+                    question.responder = responder;
+                    question.completed = completed;
+                    question.hasAnswer = true;
+                    
+                    // Обновляем отображение
+                    displayData(tableData);
+                    updateQuestionSelect(tableData);
+                    
+                    // Очищаем форму через 3 секунды
+                    setTimeout(() => {
+                        answerForm.reset();
+                        questionDetails.style.display = 'none';
+                        selectedQuestionNumber = null;
+                        questionSelect.value = "";
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(result.error || 'Ошибка сохранения');
+                }
+                
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = `❌ Ошибка при сохранении: ${error.message}`;
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+                
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Очистка формы
+        clearBtn.addEventListener('click', function() {
+            answerForm.reset();
+            questionDetails.style.display = 'none';
+            selectedQuestionNumber = null;
+            questionSelect.value = "";
+            displayData(tableData);
+            loadingMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+        });
+        
+        // Показать ошибку
+        function showError(message) {
+            errorMessage.textContent = `❌ ${message}`;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            loadingMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Показать загрузку
+        function showLoading() {
+            tableBody.innerHTML = 
+                `<tr>
+                    <td colspan="8" class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Загрузка данных из Google Таблицы...</p>
+                    </td>
+                </tr>`;
+        }
+        
+        // Экранирование HTML
+        function escapeHTML(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/\n/g, '<br>');
+        }
+        
+        // Обновить время последнего обновления
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second:
