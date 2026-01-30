@@ -299,6 +299,32 @@
         .instructions li {
             margin-bottom: 5px;
         }
+        
+        /* Сообщения */
+        .status-message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+        
+        .status-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .status-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
     </style>
 </head>
 <body>
@@ -310,11 +336,15 @@
         
         <main class="table-container">
             <div class="table-header">
-                <h2>Таблица вопросов</h2>
+                <h2>Таблица вопросов (реальные данные)</h2>
                 <div class="table-controls">
                     <input type="text" id="searchInput" class="search-box" placeholder="Поиск по вопросам...">
                     <button id="refreshBtn" class="refresh-btn">Обновить данные</button>
                 </div>
+            </div>
+            
+            <div id="statusMessage" class="status-message status-info" style="display: none;">
+                Загрузка данных из таблицы...
             </div>
             
             <div id="tableLoading" class="loading">
@@ -342,9 +372,10 @@
             <div class="instructions">
                 <h4>Как использовать эту таблицу:</h4>
                 <ul>
-                    <li>Используйте поле поиска для фильтрации вопросов по содержанию</li>
+                    <li>Данные загружаются напрямую из вашей Google таблицы</li>
+                    <li>Используйте поле поиска для фильтрации вопросов</li>
                     <li>Нажмите "Обновить данные" для получения актуальной информации</li>
-                    <li>Цветовая индикация показывает срочность вопросов</li>
+                    <li>Таблица автоматически обновляется каждые 60 секунд</li>
                     <li>Чтобы ответить на вопрос, используйте форму справа</li>
                 </ul>
             </div>
@@ -370,70 +401,59 @@
                 <h4>Инструкция по отправке ответа:</h4>
                 <ul>
                     <li>Найдите номер интересующего вопроса в таблице слева</li>
-                    <li>Введите номер вопроса в поле "Номер вопроса на который вы отвечаете"</li>
+                    <li>Введите номер вопроса в поле формы</li>
                     <li>Заполните все обязательные поля формы</li>
                     <li>Нажмите "Отправить" для сохранения ответа</li>
+                    <li><strong>После отправки ответа, обновите таблицу слева</strong></li>
                 </ul>
             </div>
         </aside>
         
         <footer>
-            <p>Данные загружаются из Google Sheets • Форма интегрирована из Google Forms • Обновлено: <span id="currentDate"></span></p>
+            <p>Данные загружаются из Google Sheets • Форма интегрирована из Google Forms • Последнее обновление: <span id="lastUpdateTime"></span></p>
         </footer>
     </div>
     
     <script>
-        // Установка текущей даты в футере
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU');
+        // URL опубликованной таблицы
+        const PUBLISHED_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQTo1gakooY6qjJK1AU_oQ5CcZ9RCOEmwhdOYh0IeqbqRuFWSnOJyv9zLX6uSWdXOKmfQkZm4cGMhSG/pubhtml';
         
-        // Имитация данных таблицы (в реальном проекте здесь будет подключение к API Google Sheets)
-        const tableData = [
-            {
-                id: 1,
-                questioner: "Овоуо",
-                course: "Связь три четыре",
-                urgency: "Ну минутку подожду (не сильно срочно)",
-                problem: "Аолагв",
-                answer: "",
-                answeredBy: ""
-            },
-            {
-                id: 2,
-                questioner: "Иванов И.",
-                course: "Математика, 2 курс",
-                urgency: "Срочно",
-                problem: "Не понимаю тему дифференциальных уравнений",
-                answer: "Рекомендую посмотреть видеоуроки на канале 'Математика проста'",
-                answeredBy: "Преподаватель Петров"
-            },
-            {
-                id: 3,
-                questioner: "Сидорова А.",
-                course: "Программирование, 3 курс",
-                urgency: "Средняя срочность",
-                problem: "Ошибка компиляции в проекте на Python",
-                answer: "",
-                answeredBy: ""
-            },
-            {
-                id: 4,
-                questioner: "Петров П.",
-                course: "Физика, 1 курс",
-                urgency: "Не срочно",
-                problem: "Где найти материалы по лабораторной работе №5?",
-                answer: "Все материалы выложены на портале в разделе 'Лабораторные работы'",
-                answeredBy: "Ассистент Козлова"
-            },
-            {
-                id: 5,
-                questioner: "Козлова М.",
-                course: "Химия, 4 курс",
-                urgency: "Очень срочно",
-                problem: "Не могу рассчитать молярную массу соединения",
-                answer: "Используйте формулу M = m/n, где m - масса, n - количество вещества",
-                answeredBy: "Доцент Иванов"
+        // Функция для отображения статуса
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status-message';
+            
+            switch(type) {
+                case 'info':
+                    statusDiv.classList.add('status-info');
+                    break;
+                case 'success':
+                    statusDiv.classList.add('status-success');
+                    break;
+                case 'error':
+                    statusDiv.classList.add('status-error');
+                    break;
             }
-        ];
+            
+            statusDiv.style.display = 'block';
+        }
+        
+        // Функция для скрытия статуса
+        function hideStatus() {
+            document.getElementById('statusMessage').style.display = 'none';
+        }
+        
+        // Функция для обновления времени последнего обновления
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('lastUpdateTime').textContent = timeString;
+        }
         
         // Функция для получения класса срочности
         function getUrgencyClass(urgencyText) {
@@ -453,60 +473,164 @@
         function formatUrgencyText(urgencyText) {
             if (!urgencyText) return "Не указана";
             
-            if (urgencyText.includes("(не сильно срочно)")) {
+            const text = urgencyText.toLowerCase();
+            if (text.includes("не сильно срочно") || text.includes("не срочно")) {
                 return "Низкая";
-            } else if (urgencyText.includes("Срочно")) {
+            } else if (text.includes("срочно")) {
                 return "Высокая";
-            } else if (urgencyText.includes("Средняя")) {
+            } else if (text.includes("средняя")) {
                 return "Средняя";
-            } else if (urgencyText.includes("Не срочно")) {
-                return "Низкая";
-            } else if (urgencyText.includes("Очень срочно")) {
+            } else if (text.includes("очень срочно")) {
                 return "Очень высокая";
             }
             
             return urgencyText;
         }
         
-        // Функция для загрузки данных в таблицу
-        function loadTableData() {
+        // Основная функция загрузки данных из опубликованной таблицы
+        async function loadTableData() {
             const tableBody = document.getElementById('tableBody');
             const loadingElement = document.getElementById('tableLoading');
             const tableElement = document.getElementById('excelTable');
             
-            // Очистка таблицы
-            tableBody.innerHTML = '';
+            // Показываем индикатор загрузки
+            loadingElement.style.display = 'block';
+            tableElement.style.display = 'none';
+            showStatus('Загрузка данных из таблицы...', 'info');
             
-            // Добавление данных
-            tableData.forEach(item => {
-                const row = document.createElement('tr');
+            try {
+                // Загружаем HTML опубликованной таблицы
+                const response = await fetch(PUBLISHED_SHEET_URL, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
                 
-                // Добавление класса в зависимости от наличия ответа
-                if (item.answer && item.answeredBy) {
-                    row.classList.add('answered');
-                } else {
-                    row.classList.add('pending');
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
                 }
                 
-                const urgencyClass = getUrgencyClass(item.urgency);
-                const formattedUrgency = formatUrgencyText(item.urgency);
+                const htmlText = await response.text();
                 
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.questioner || ""}</td>
-                    <td>${item.course || ""}</td>
-                    <td><span class="urgency-cell ${urgencyClass}">${formattedUrgency}</span></td>
-                    <td>${item.problem || ""}</td>
-                    <td>${item.answer || "<em>Ожидает ответа</em>"}</td>
-                    <td>${item.answeredBy || ""}</td>
+                // Создаем временный элемент для парсинга HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                
+                // Ищем таблицу в HTML
+                const table = doc.querySelector('table');
+                
+                if (!table) {
+                    throw new Error('Таблица не найдена в HTML');
+                }
+                
+                // Очищаем текущие данные
+                tableBody.innerHTML = '';
+                
+                // Парсим строки таблицы
+                const rows = table.querySelectorAll('tr');
+                let rowCount = 0;
+                
+                // Пропускаем заголовки и пустые строки
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].querySelectorAll('td');
+                    
+                    // Пропускаем пустые строки и строки без данных
+                    if (cells.length < 6) continue;
+                    
+                    // Пропускаем строку с буквами колонок (A, B, C, ...)
+                    const firstCellText = cells[0].textContent.trim();
+                    if (firstCellText.length === 1 && firstCellText.match(/[A-Z]/)) {
+                        continue;
+                    }
+                    
+                    rowCount++;
+                    
+                    // Извлекаем данные из ячеек
+                    const rowData = {
+                        id: cells[0]?.textContent?.trim() || rowCount,
+                        questioner: cells[1]?.textContent?.trim() || '',
+                        course: cells[2]?.textContent?.trim() || '',
+                        urgency: cells[3]?.textContent?.trim() || '',
+                        problem: cells[4]?.textContent?.trim() || '',
+                        answer: cells[5]?.textContent?.trim() || '',
+                        answeredBy: cells[6]?.textContent?.trim() || ''
+                    };
+                    
+                    // Создаем строку для таблицы
+                    const row = document.createElement('tr');
+                    
+                    // Добавляем класс в зависимости от наличия ответа
+                    if (rowData.answer && rowData.answeredBy) {
+                        row.classList.add('answered');
+                    } else {
+                        row.classList.add('pending');
+                    }
+                    
+                    const urgencyClass = getUrgencyClass(rowData.urgency);
+                    const formattedUrgency = formatUrgencyText(rowData.urgency);
+                    
+                    // Заполняем строку данными
+                    row.innerHTML = `
+                        <td>${rowData.id}</td>
+                        <td>${rowData.questioner}</td>
+                        <td>${rowData.course}</td>
+                        <td><span class="urgency-cell ${urgencyClass}">${formattedUrgency}</span></td>
+                        <td>${rowData.problem}</td>
+                        <td>${rowData.answer || "<em>Ожидает ответа</em>"}</td>
+                        <td>${rowData.answeredBy}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                }
+                
+                // Обновляем статус
+                if (rowCount > 0) {
+                    showStatus(`Успешно загружено ${rowCount - 1} вопросов`, 'success');
+                    updateLastUpdateTime();
+                    
+                    // Скрываем статус через 3 секунды
+                    setTimeout(hideStatus, 3000);
+                } else {
+                    showStatus('В таблице нет данных', 'error');
+                }
+                
+                // Скрываем индикатор загрузки и показываем таблицу
+                loadingElement.style.display = 'none';
+                tableElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                
+                // Показываем ошибку
+                showStatus(`Ошибка загрузки: ${error.message}`, 'error');
+                
+                // Скрываем индикатор загрузки
+                loadingElement.style.display = 'none';
+                
+                // Показываем сообщение об ошибке в таблице
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #c62828;">
+                            <h3>Ошибка загрузки данных</h3>
+                            <p>${error.message}</p>
+                            <p>Проверьте доступ к таблице по ссылке:</p>
+                            <p><a href="${PUBLISHED_SHEET_URL}" target="_blank">${PUBLISHED_SHEET_URL}</a></p>
+                            <button onclick="loadTableData()" style="
+                                background-color: #4285f4;
+                                color: white;
+                                border: none;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin-top: 10px;
+                            ">Попробовать снова</button>
+                        </td>
+                    </tr>
                 `;
                 
-                tableBody.appendChild(row);
-            });
-            
-            // Скрываем индикатор загрузки и показываем таблицу
-            loadingElement.style.display = 'none';
-            tableElement.style.display = 'block';
+                tableElement.style.display = 'block';
+            }
         }
         
         // Функция для фильтрации таблицы
@@ -523,6 +647,9 @@
         
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
+            // Устанавливаем начальное время обновления
+            updateLastUpdateTime();
+            
             // Загружаем данные таблицы
             loadTableData();
             
@@ -531,26 +658,12 @@
             
             // Настраиваем кнопку обновления
             document.getElementById('refreshBtn').addEventListener('click', function() {
-                document.getElementById('tableLoading').style.display = 'block';
-                document.getElementById('excelTable').style.display = 'none';
-                
-                // Имитация задержки загрузки данных
-                setTimeout(() => {
-                    loadTableData();
-                }, 800);
+                loadTableData();
             });
             
-            // Имитация задержки при первой загрузке
-            setTimeout(() => {
-                loadTableData();
-            }, 1200);
+            // Автообновление каждые 60 секунд
+            setInterval(loadTableData, 60000);
         });
-        
-        // Функция для добавления нового вопроса (для демонстрации)
-        function addNewQuestion(question) {
-            tableData.push(question);
-            loadTableData();
-        }
     </script>
 </body>
 </html>
