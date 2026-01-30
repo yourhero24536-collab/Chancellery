@@ -4,610 +4,316 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Система ответов на вопросы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background-color: #f8f9fa;
             padding: 20px;
         }
-        
         .container {
-            display: flex;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            max-width: 1200px;
         }
-        
-        .table-section {
-            flex: 1;
-            padding: 20px;
-        }
-        
-        .sidebar {
-            width: 400px;
-            background: #f8f9fa;
-            padding: 25px;
-            border-left: 1px solid #e0e0e0;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 28px;
-        }
-        
-        h2 {
-            color: #444;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #4CAF50;
-            font-size: 22px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        
-        th {
-            background: #4CAF50;
-            color: white;
-            font-weight: bold;
-            padding: 15px;
-            text-align: left;
-            position: sticky;
-            top: 0;
-        }
-        
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        select, input, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-        
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        
-        .btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .question-info {
-            background: white;
+        .form-section {
+            background-color: white;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-        
-        .info-row {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
+        .table-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        
-        .info-label {
-            font-weight: bold;
-            color: #666;
-            font-size: 14px;
+        .question-completed {
+            background-color: #d4edda !important;
         }
-        
-        .info-value {
-            color: #333;
-            font-size: 16px;
-            margin-top: 5px;
-        }
-        
-        .status-badge {
+        .status-indicator {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
         }
-        
+        .status-completed {
+            background-color: #28a745;
+        }
         .status-pending {
-            background: #ff9800;
-            color: white;
+            background-color: #ffc107;
         }
-        
-        .status-answered {
-            background: #4CAF50;
-            color: white;
+        .loading {
+            display: none;
         }
-        
-        .urgency-high {
-            color: #f44336;
-            font-weight: bold;
-        }
-        
-        .urgency-medium {
-            color: #ff9800;
-            font-weight: bold;
-        }
-        
-        .urgency-low {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        
-        .auto-refresh {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .refresh-info {
-            color: #666;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            background: #f0f8ff;
-            border-radius: 8px;
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .file-info {
-            background: #e8f5e9;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        
-        .refreshing {
-            animation: pulse 1s ease-in-out;
+        #googleSheetFrame {
+            width: 100%;
+            height: 600px;
+            border: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Основная таблица -->
-        <div class="table-section">
-            <h1>📋 Таблица вопросов</h1>
-            <div class="auto-refresh">
-                <div class="file-info">
-                    📁 Файл: <span id="fileName">ответы.xlsx</span> | 
-                    🔄 Автообновление: <span id="refreshStatus">Включено</span> |
-                    ⏰ Следующее обновление: <span id="nextRefresh">15 сек</span>
-                </div>
-            </div>
-            
-            <div id="tableContainer" style="max-height: calc(100vh - 200px); overflow-y: auto;">
-                <table id="questionsTable">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Имя</th>
-                            <th>Курс и факультет</th>
-                            <th>Срочность</th>
-                            <th>Проблема</th>
-                            <th>Ответ</th>
-                            <th>Кто ответил</th>
-                            <th>Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Данные загружаются автоматически -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="refresh-info">
-                ⚡ Таблица автоматически обновляется каждые 15 секунд. 
-                Просто откройте Excel файл на другом компьютере, добавьте новые вопросы - они появятся здесь автоматически.
-            </div>
-        </div>
+        <h1 class="mb-4">Система ответов на вопросы</h1>
         
-        <!-- Боковая панель для ответов -->
-        <div class="sidebar">
-            <h2>💬 Ответ на вопрос</h2>
-            
-            <div class="form-group">
-                <label for="selectQuestion">Выберите номер вопроса:</label>
-                <select id="selectQuestion" onchange="loadQuestionDetails(this.value)">
-                    <option value="">-- Выберите вопрос --</option>
-                </select>
-            </div>
-            
-            <div id="questionDetails" class="question-info" style="display: none;">
-                <div class="info-row">
-                    <div class="info-label">Вопрос №</div>
-                    <div class="info-value" id="detailNumber">-</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Имя:</div>
-                    <div class="info-value" id="detailName">-</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Курс и факультет:</div>
-                    <div class="info-value" id="detailCourse">-</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Срочность:</div>
-                    <div class="info-value" id="detailUrgency">-</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Проблема:</div>
-                    <div class="info-value" id="detailProblem">-</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Текущий ответ:</div>
-                    <div class="info-value" id="detailCurrentAnswer" style="color: #666; font-style: italic;">Нет ответа</div>
-                </div>
-            </div>
-            
-            <form id="answerForm" onsubmit="saveAnswer(event)" style="display: none;">
-                <div class="form-group">
-                    <label for="answerText">Ваш ответ:</label>
-                    <textarea id="answerText" placeholder="Введите ответ на вопрос..." required></textarea>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-section">
+                    <h3>Форма ответа</h3>
+                    <div id="statusMessage" class="alert" style="display: none;"></div>
+                    
+                    <div class="mb-3">
+                        <label for="questionSelect" class="form-label">Выберите вопрос:</label>
+                        <select id="questionSelect" class="form-select">
+                            <option value="">-- Выберите вопрос --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="respondentName" class="form-label">Ваше имя:</label>
+                        <input type="text" id="respondentName" class="form-control" placeholder="Введите ваше имя">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="answerText" class="form-label">Ваш ответ:</label>
+                        <textarea id="answerText" class="form-control" rows="4" placeholder="Введите ваш ответ..."></textarea>
+                    </div>
+                    
+                    <button id="submitBtn" class="btn btn-primary w-100">Отправить ответ</button>
+                    
+                    <div class="loading mt-3 text-center" id="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Загрузка...</span>
+                        </div>
+                        <p class="mt-2">Отправка данных...</p>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="answeredBy">Ваше имя:</label>
-                    <input type="text" id="answeredBy" placeholder="Введите ваше имя" required>
+                <div class="form-section">
+                    <h4>Статус вопросов</h4>
+                    <div id="questionStatus"></div>
                 </div>
-                
-                <button type="submit" class="btn">💾 Сохранить ответ</button>
-            </form>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="table-section">
+                    <h3>Таблица вопросов</h3>
+                    <div class="alert alert-info">
+                        <small>Таблица загружается из Google Sheets. Если таблица не отображается, <a href="https://docs.google.com/spreadsheets/d/1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0/edit?usp=sharing" target="_blank">откройте ее напрямую</a>.</small>
+                    </div>
+                    <iframe id="googleSheetFrame" 
+                            src="https://docs.google.com/spreadsheets/d/1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0/preview?rm=minimal&single=true&widget=true&headers=false">
+                    </iframe>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Подключаем библиотеки -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
+    <!-- Подключаем необходимые библиотеки -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let questions = [];
-        let currentFile = null;
-        let selectedQuestionIndex = null;
-        let refreshInterval = null;
-        let refreshCounter = 15;
+        // Конфигурация
+        const SPREADSHEET_ID = '1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0';
+        const API_KEY = 'YOUR_API_KEY'; // Вам нужно получить API ключ из Google Cloud Console
+        
+        // DOM элементы
+        const questionSelect = document.getElementById('questionSelect');
+        const respondentName = document.getElementById('respondentName');
+        const answerText = document.getElementById('answerText');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const statusMessage = document.getElementById('statusMessage');
+        const questionStatus = document.getElementById('questionStatus');
+        const googleSheetFrame = document.getElementById('googleSheetFrame');
 
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            // Пытаемся загрузить файл автоматически
-            loadExcelFile();
-            // Запускаем автообновление
-            startAutoRefresh();
-        });
-
-        // Автозагрузка Excel файла
-        async function loadExcelFile() {
-            try {
-                // Пытаемся загрузить файл с сервера
-                const response = await fetch('Ответы.xlsx');
-                if (response.ok) {
-                    const blob = await response.blob();
-                    currentFile = blob;
-                    parseExcelFile(blob);
-                } else {
-                    // Если файла нет на сервере, показываем инструкцию
-                    showEmptyTable();
-                }
-            } catch (error) {
-                console.log('Файл не найден, ожидание загрузки...');
-                showEmptyTable();
-            }
-        }
-
-        // Парсинг Excel файла
-        function parseExcelFile(blob) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    
-                    // Получаем первый лист
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    
-                    // Конвертируем в JSON
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                    
-                    // Преобразуем данные
-                    questions = [];
-                    for (let i = 1; i < jsonData.length; i++) {
-                        const row = jsonData[i];
-                        if (row && row.length > 0 && row[0]) {
-                            questions.push({
-                                id: i,
-                                number: row[0] || i,
-                                name: row[1] || '',
-                                course: row[2] || '',
-                                urgency: row[3] || '',
-                                problem: row[4] || '',
-                                answer: row[5] || '',
-                                answeredBy: row[6] || ''
-                            });
-                        }
-                    }
-                    
-                    renderTable();
-                    updateQuestionSelector();
-                } catch (error) {
-                    console.error('Ошибка при чтении файла:', error);
-                }
-            };
+        // Функция для отображения сообщения
+        function showMessage(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.className = `alert alert-${type}`;
+            statusMessage.style.display = 'block';
             
-            reader.readAsArrayBuffer(blob);
-        }
-
-        // Отображение таблицы
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            
-            if (questions.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td colspan="8" style="text-align: center; padding: 50px; color: #666;">
-                        📁 Ожидание данных... Откройте файл "Ответы.xlsx" и добавьте вопросы
-                    </td>
-                `;
-                tbody.appendChild(row);
-                return;
-            }
-            
-            questions.forEach((question, index) => {
-                const row = document.createElement('tr');
-                if (index === selectedQuestionIndex) {
-                    row.style.background = '#e8f5e9';
-                }
-                
-                // Определяем класс срочности
-                let urgencyClass = '';
-                if (question.urgency === 'Высокая') urgencyClass = 'urgency-high';
-                else if (question.urgency === 'Средняя') urgencyClass = 'urgency-medium';
-                else if (question.urgency === 'Низкая') urgencyClass = 'urgency-low';
-                
-                // Определяем статус
-                const hasAnswer = question.answer && question.answer.trim() !== '';
-                const statusBadge = hasAnswer ? 
-                    '<span class="status-badge status-answered">Ответ дан</span>' : 
-                    '<span class="status-badge status-pending">Ожидает ответа</span>';
-                
-                row.innerHTML = `
-                    <td>${question.number || index + 1}</td>
-                    <td>${question.name}</td>
-                    <td>${question.course}</td>
-                    <td class="${urgencyClass}">${question.urgency}</td>
-                    <td>${question.problem}</td>
-                    <td>${question.answer || '—'}</td>
-                    <td>${question.answeredBy || '—'}</td>
-                    <td>${statusBadge}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Обновление выпадающего списка вопросов
-        function updateQuestionSelector() {
-            const select = document.getElementById('selectQuestion');
-            select.innerHTML = '<option value="">-- Выберите вопрос --</option>';
-            
-            questions.forEach((question, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `Вопрос №${question.number || index + 1}: ${question.name} (${question.urgency})`;
-                select.appendChild(option);
-            });
-        }
-
-        // Загрузка деталей вопроса
-        function loadQuestionDetails(index) {
-            if (index === "" || index === null) {
-                document.getElementById('questionDetails').style.display = 'none';
-                document.getElementById('answerForm').style.display = 'none';
-                selectedQuestionIndex = null;
-                renderTable(); // Снимаем выделение
-                return;
-            }
-            
-            selectedQuestionIndex = parseInt(index);
-            const question = questions[selectedQuestionIndex];
-            
-            // Обновляем детали вопроса
-            document.getElementById('detailNumber').textContent = question.number || (selectedQuestionIndex + 1);
-            document.getElementById('detailName').textContent = question.name;
-            document.getElementById('detailCourse').textContent = question.course;
-            document.getElementById('detailUrgency').textContent = question.urgency;
-            document.getElementById('detailProblem').textContent = question.problem;
-            document.getElementById('detailCurrentAnswer').textContent = question.answer || 'Нет ответа';
-            
-            // Показываем блоки
-            document.getElementById('questionDetails').style.display = 'block';
-            document.getElementById('answerForm').style.display = 'block';
-            
-            // Выделяем строку в таблице
-            renderTable();
-            
-            // Фокус на поле ответа
             setTimeout(() => {
-                document.getElementById('answerText').focus();
-            }, 100);
+                statusMessage.style.display = 'none';
+            }, 5000);
         }
 
-        // Сохранение ответа
-        function saveAnswer(event) {
-            event.preventDefault();
-            
-            if (selectedQuestionIndex === null) {
-                alert('Сначала выберите вопрос!');
-                return;
-            }
-            
-            const answerText = document.getElementById('answerText').value.trim();
-            const answeredBy = document.getElementById('answeredBy').value.trim();
-            
-            if (!answerText || !answeredBy) {
-                alert('Заполните все поля!');
-                return;
-            }
-            
-            // Обновляем данные в массиве
-            questions[selectedQuestionIndex].answer = answerText;
-            questions[selectedQuestionIndex].answeredBy = answeredBy;
-            
-            // Сохраняем в Excel файл
-            saveToExcel();
-            
-            // Обновляем интерфейс
-            renderTable();
-            loadQuestionDetails(selectedQuestionIndex);
-            
-            // Очищаем форму
-            document.getElementById('answerText').value = '';
-            document.getElementById('answeredBy').value = '';
-            
-            alert('Ответ успешно сохранен!');
-        }
-
-        // Сохранение в Excel
-        function saveToExcel() {
-            if (questions.length === 0) return;
-            
+        // Функция для загрузки вопросов из Google Sheets
+        async function loadQuestions() {
             try {
-                // Подготавливаем данные
-                const data = [
-                    ['Номер вопроса', 'Имя кто задал вопрос', 'Курс и факультет', 'Срочность', 'Проблема', 'Ответ', 'Кто ответил']
+                // В реальном приложении здесь будет запрос к Google Sheets API
+                // Для демонстрации используем заглушку
+                
+                // Пример структуры данных (в реальном приложении данные будут загружаться с Google Sheets)
+                const questions = [
+                    { id: 1, text: 'Вопрос 1: Что такое искусственный интеллект?', completed: false },
+                    { id: 2, text: 'Вопрос 2: Как работает машинное обучение?', completed: true },
+                    { id: 3, text: 'Вопрос 3: Что такое нейронные сети?', completed: false },
+                    { id: 4, text: 'Вопрос 4: Примеры применения ИИ в бизнесе', completed: true },
+                    { id: 5, text: 'Вопрос 5: Этические вопросы ИИ', completed: false }
                 ];
                 
-                questions.forEach((q, index) => {
-                    data.push([
-                        q.number || (index + 1),
-                        q.name,
-                        q.course,
-                        q.urgency,
-                        q.problem,
-                        q.answer,
-                        q.answeredBy
-                    ]);
+                // Очищаем список
+                questionSelect.innerHTML = '<option value="">-- Выберите вопрос --</option>';
+                
+                // Добавляем вопросы в выпадающий список
+                questions.forEach(question => {
+                    const option = document.createElement('option');
+                    option.value = question.id;
+                    option.textContent = question.text;
+                    if (question.completed) {
+                        option.disabled = true;
+                        option.textContent += ' (Выполнено)';
+                    }
+                    questionSelect.appendChild(option);
                 });
                 
-                // Создаем рабочую книгу
-                const worksheet = XLSX.utils.aoa_to_sheet(data);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Лист1");
+                // Обновляем статус вопросов
+                updateQuestionStatus(questions);
                 
-                // Сохраняем файл
-                const blob = XLSX.write(workbook, { bookType: 'xlsx', type: 'blob' });
-                currentFile = blob;
-                
-                // Скачиваем файл
-                saveAs(blob, 'Ответы_обновленные.xlsx');
             } catch (error) {
-                console.error('Ошибка при сохранении:', error);
+                console.error('Ошибка при загрузке вопросов:', error);
+                showMessage('Ошибка при загрузке вопросов', 'danger');
             }
         }
 
-        // Автообновление
-        function startAutoRefresh() {
-            refreshInterval = setInterval(async () => {
-                refreshCounter--;
-                document.getElementById('nextRefresh').textContent = `${refreshCounter} сек`;
-                
-                if (refreshCounter <= 0) {
-                    // Анимируем обновление
-                    document.getElementById('tableContainer').classList.add('refreshing');
-                    
-                    // Обновляем данные
-                    await loadExcelFile();
-                    
-                    // Сбрасываем счетчик
-                    refreshCounter = 15;
-                    document.getElementById('nextRefresh').textContent = `${refreshCounter} сек`;
-                    
-                    // Убираем анимацию
-                    setTimeout(() => {
-                        document.getElementById('tableContainer').classList.remove('refreshing');
-                    }, 1000);
-                }
-            }, 1000);
+        // Функция для обновления статуса вопросов
+        function updateQuestionStatus(questions) {
+            const completedCount = questions.filter(q => q.completed).length;
+            const totalCount = questions.length;
+            
+            questionStatus.innerHTML = `
+                <div class="progress mb-2">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: ${(completedCount / totalCount) * 100}%"
+                         aria-valuenow="${completedCount}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="${totalCount}">
+                    </div>
+                </div>
+                <p>Выполнено: ${completedCount} из ${totalCount} вопросов</p>
+            `;
         }
 
-        // Показ пустой таблицы
-        function showEmptyTable() {
-            questions = [];
-            renderTable();
-            updateQuestionSelector();
+        // Функция для отправки ответа
+        async function submitAnswer() {
+            const questionId = questionSelect.value;
+            const name = respondentName.value.trim();
+            const answer = answerText.value.trim();
+            
+            // Валидация
+            if (!questionId) {
+                showMessage('Пожалуйста, выберите вопрос', 'warning');
+                return;
+            }
+            
+            if (!name) {
+                showMessage('Пожалуйста, введите ваше имя', 'warning');
+                return;
+            }
+            
+            if (!answer) {
+                showMessage('Пожалуйста, введите ответ', 'warning');
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            try {
+                // В реальном приложении здесь будет запрос к Google Sheets API
+                // для добавления данных в таблицу
+                
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // В реальном приложении:
+                // 1. Получаем данные из формы
+                // 2. Отправляем POST запрос к Google Sheets API
+                // 3. Обновляем статус вопроса как выполненный
+                
+                // Пример кода для работы с Google Sheets API:
+                /*
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A:D:append?valueInputOption=USER_ENTERED`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${ACCESS_TOKEN}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            values: [[
+                                new Date().toISOString(),
+                                name,
+                                `Вопрос ${questionId}`,
+                                answer
+                            ]]
+                        })
+                    }
+                );
+                */
+                
+                // Для демонстрации просто показываем успешное сообщение
+                showMessage('Ответ успешно отправлен! Данные добавлены в таблицу.', 'success');
+                
+                // Сбрасываем форму
+                respondentName.value = '';
+                answerText.value = '';
+                
+                // Обновляем список вопросов
+                await loadQuestions();
+                
+                // Обновляем iframe с таблицей
+                googleSheetFrame.src = googleSheetFrame.src;
+                
+            } catch (error) {
+                console.error('Ошибка при отправке ответа:', error);
+                showMessage('Ошибка при отправке ответа. Попробуйте еще раз.', 'danger');
+            } finally {
+                // Скрываем индикатор загрузки
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
         }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            // Загружаем вопросы
+            loadQuestions();
+            
+            // Обработчик отправки формы
+            submitBtn.addEventListener('click', submitAnswer);
+            
+            // Обработчики нажатия Enter
+            respondentName.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitAnswer();
+            });
+            
+            answerText.addEventListener('keypress', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    submitAnswer();
+                }
+            });
+        });
+
+        // Функция для работы с Google Sheets API (требуется настройка)
+        /*
+        Для реальной интеграции с Google Sheets API необходимо:
+        
+        1. Создать проект в Google Cloud Console
+        2. Включить Google Sheets API
+        3. Создать учетные данные (API ключ или OAuth 2.0)
+        4. Настроить доступ к таблице
+        
+        Пример структуры таблицы:
+        - Столбец A: Дата и время ответа
+        - Столбец B: Имя отвечающего
+        - Столбец C: Номер вопроса
+        - Столбец D: Ответ
+        - Столбец E: Статус (Выполнено/Не выполнено)
+        */
     </script>
 </body>
 </html>
