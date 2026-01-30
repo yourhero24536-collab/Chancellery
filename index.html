@@ -3,1031 +3,694 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система управления вопросами</title>
+    <title>Система вопросов и ответов</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             padding: 20px;
         }
         
         .container {
-            max-width: 1600px;
-            margin: 0 auto;
             display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 25px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #3498db;
-        }
-        
-        .header h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
-        }
-        
-        .header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
         
         .main-content {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .answer-section {
             flex: 1;
-            min-width: 400px;
             background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .answer-box {
-            background: #f8f9fa;
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #2ecc71;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .answer-box h3 {
-            color: #2c3e50;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .form-group {
+        h1 {
+            color: #333;
             margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-        
-        .question-select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            transition: border 0.3s;
-        }
-        
-        .question-select:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        .question-details {
-            background: #e8f4fc;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 0.95rem;
-            color: #2c3e50;
-            display: none;
-        }
-        
-        .detail-row {
-            display: flex;
-            margin-bottom: 8px;
-        }
-        
-        .detail-label {
-            min-width: 120px;
-            font-weight: 600;
-            color: #3498db;
-        }
-        
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .form-group textarea:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        .form-group input:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 25px;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            flex: 1;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            background: linear-gradient(to right, #2980b9, #2573a7);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-primary:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .btn-secondary {
-            background: #ecf0f1;
-            color: #2c3e50;
-            flex: 1;
-        }
-        
-        .btn-secondary:hover {
-            background: #d5dbdb;
-        }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            display: none;
             text-align: center;
-            border: 1px solid #c3e6cb;
-            animation: fadeIn 0.5s;
         }
         
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            display: none;
-            text-align: center;
-            border: 1px solid #f5c6cb;
-            animation: fadeIn 0.5s;
-        }
-        
-        .info-message {
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            text-align: center;
-            border: 1px solid #bee5eb;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .table-section {
-            flex: 3;
-            min-width: 800px;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 25px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .table-header h2 {
-            color: #2c3e50;
+        h2 {
+            color: #444;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
         }
         
         .controls {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
-        .refresh-btn {
-            background: linear-gradient(to right, #2ecc71, #27ae60);
+        .btn {
+            padding: 10px 20px;
+            background: #4CAF50;
             color: white;
             border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            font-weight: 500;
+            font-size: 14px;
             transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
         
-        .refresh-btn:hover {
-            background: linear-gradient(to right, #27ae60, #219653);
+        .btn:hover {
+            background: #45a049;
         }
         
-        .auto-update-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+        .btn-secondary {
+            background: #2196F3;
         }
         
-        .indicator-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #2ecc71;
-            animation: pulse 2s infinite;
+        .btn-secondary:hover {
+            background: #0b7dda;
         }
         
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        .btn-danger {
+            background: #f44336;
         }
         
-        .table-wrapper {
-            overflow-x: auto;
-            flex-grow: 1;
-            max-height: 600px;
+        .btn-danger:hover {
+            background: #d32f2f;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1200px;
+            margin-top: 20px;
         }
         
-        thead {
-            background: linear-gradient(to right, #3498db, #2980b9);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
         
         th {
-            color: white;
-            padding: 18px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-right: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        th:last-child {
-            border-right: none;
-        }
-        
-        tbody tr {
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .completed-row {
-            background-color: #f0f9f0;
-        }
-        
-        .selected-row {
-            background-color: #fff3cd !important;
-            border-left: 4px solid #ffc107;
-        }
-        
-        .answered-row {
-            background-color: #f0f9ff;
-        }
-        
-        td {
-            padding: 15px 12px;
-            vertical-align: top;
-            border-right: 1px solid #eee;
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        td:last-child {
-            border-right: none;
-        }
-        
-        .question-cell {
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .question-cell:hover {
-            background-color: #e8f4fc;
-        }
-        
-        .status-checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            margin: 0 auto;
-            display: block;
-        }
-        
-        .status-cell {
-            text-align: center;
-            vertical-align: middle;
-        }
-        
-        .completed-check {
-            color: #2ecc71;
+            background-color: #f8f9fa;
             font-weight: bold;
-            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         
         .urgency-high {
-            background-color: #ffeaea;
-            color: #e74c3c;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            color: #f44336;
+            font-weight: bold;
         }
         
         .urgency-medium {
-            background-color: #fff4e6;
-            color: #f39c12;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            color: #ff9800;
+            font-weight: bold;
         }
         
         .urgency-low {
-            background-color: #e8f6f3;
-            color: #16a085;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            color: #4CAF50;
+            font-weight: bold;
         }
         
-        .empty-cell {
-            color: #95a5a6;
-            font-style: italic;
-            text-align: center;
+        .status-pending {
+            color: #ff9800;
         }
         
-        .loading {
-            text-align: center;
-            padding: 60px;
+        .status-answered {
+            color: #4CAF50;
         }
         
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #95a5a6;
-            font-size: 0.9rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
         }
         
-        .update-info {
+        .close:hover {
+            color: #000;
+        }
+        
+        .file-input-container {
+            margin-bottom: 20px;
+        }
+        
+        .file-input-label {
             display: inline-block;
-            background: #ecf0f1;
             padding: 10px 20px;
-            border-radius: 20px;
-            margin-top: 10px;
+            background: #2196F3;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
         }
         
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
+        .file-info {
+            display: inline-block;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
             }
-            
-            .table-section, .answer-section {
-                min-width: 100%;
-            }
-            
-            th, td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-            }
-            
-            .form-actions {
-                flex-direction: column;
+            to {
+                transform: translateX(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>📋 Система управления вопросами студентов</h1>
-            <p>Отслеживание и обработка вопросов от студентов</p>
-        </div>
-        
         <div class="main-content">
-            <!-- Блок для ответа на вопрос -->
-            <div class="answer-section">
-                <div class="answer-box">
-                    <h3>✏️ Ответить на вопрос</h3>
-                    <div class="info-message">
-                        ⚠️ Система работает в демо-режиме. Для реальной работы с Google Таблицей 
-                        <a href="#" onclick="setupGoogleSheets()">настройте доступ</a>
-                    </div>
-                    <form id="answerForm">
-                        <div class="form-group">
-                            <label for="questionSelect">Выберите вопрос:</label>
-                            <select id="questionSelect" class="question-select">
-                                <option value="">-- Выберите вопрос --</option>
-                                <option value="1">#1 - Иван: Проблема с доступом к материалам</option>
-                                <option value="2">#2 - Мария: Вопрос по расписанию</option>
-                                <option value="3">#3 - Алексей: Технические проблемы</option>
-                                <option value="4">#4 - Анна: Консультация по проекту</option>
-                                <option value="5">#5 - Дмитрий: Вопрос по экзамену</option>
-                            </select>
-                            <div id="questionDetails" class="question-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Имя:</span>
-                                    <span id="detailName">Иван Иванов</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Курс/Факультет:</span>
-                                    <span id="detailCourse">3 курс, Факультет информатики</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Срочность:</span>
-                                    <span id="detailUrgency">Высокая</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Проблема:</span>
-                                    <span id="detailProblem">Нет доступа к учебным материалам на платформе</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="answerText">Ответ:</label>
-                            <textarea id="answerText" placeholder="Введите подробный ответ..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="responderName">Кто отвечает:</label>
-                            <input type="text" id="responderName" placeholder="Ваше имя">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="markCompleted">
-                                Отметить как выполненное
-                            </label>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-primary" id="submitBtn" onclick="saveResponse()">Сохранить ответ</button>
-                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Очистить</button>
-                        </div>
-                        
-                        <div id="successMessage" class="success-message">
-                            ✅ Ответ успешно сохранен! Данные будут обновлены.
-                        </div>
-                        
-                        <div id="errorMessage" class="error-message">
-                            ❌ Ошибка при сохранении ответа.
-                        </div>
-                    </form>
+            <h1>📊 Система вопросов и ответов</h1>
+            
+            <div class="controls">
+                <div class="file-input-container">
+                    <label for="excelFile" class="file-input-label">📁 Выбрать Excel файл</label>
+                    <input type="file" id="excelFile" accept=".xlsx,.xls" style="display: none;">
+                    <span class="file-info" id="fileInfo">Файл не выбран</span>
                 </div>
                 
-                <div class="rules-box">
-                    <h3>📋 Правила работы</h3>
-                    <ul>
-                        <li>Выберите вопрос из списка</li>
-                        <li>Введите подробный ответ</li>
-                        <li>Укажите своё имя</li>
-                        <li>Поставьте отметку о выполнении</li>
-                        <li>Таблица обновляется каждые 5 минут</li>
-                        <li>Для связи с Google Таблицей требуется настройка доступа</li>
-                    </ul>
-                </div>
+                <button class="btn" onclick="loadFromExcel()">📥 Загрузить из Excel</button>
+                <button class="btn btn-secondary" onclick="saveToExcel()">💾 Сохранить в Excel</button>
+                <button class="btn btn-secondary" onclick="showAddModal()">➕ Добавить вопрос</button>
+                <button class="btn btn-danger" onclick="clearTable()">🗑️ Очистить таблицу</button>
             </div>
             
-            <!-- Блок с таблицей -->
-            <div class="table-section">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h2>Таблица вопросов студентов</h2>
-                        <div class="controls">
-                            <div class="auto-update-indicator">
-                                <div class="indicator-dot"></div>
-                                <span>Следующее обновление через: <span id="countdown">5:00</span></span>
-                            </div>
-                            <button class="refresh-btn" onclick="loadTableData()">
-                                <span>↻</span> Обновить
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-wrapper">
-                        <table id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th width="4%">№</th>
-                                    <th width="6%">Выполнено</th>
-                                    <th width="12%">Имя (кто задал)</th>
-                                    <th width="15%">Курс и факультет</th>
-                                    <th width="8%">Срочность</th>
-                                    <th width="20%">Проблема</th>
-                                    <th width="25%">Ответ</th>
-                                    <th width="10%">Кто ответил</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Данные будут загружены здесь -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div id="tableContainer">
+                <table id="questionsTable">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Имя</th>
+                            <th>Курс и факультет</th>
+                            <th>Срочность</th>
+                            <th>Проблема</th>
+                            <th>Ответ</th>
+                            <th>Кто ответил</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Данные будут загружены здесь -->
+                    </tbody>
+                </table>
             </div>
         </div>
         
-        <div class="footer">
-            <div class="update-info">
-                Последнее обновление: <span id="lastUpdate">-</span>
+        <!-- Боковая плашка с ответами -->
+        <div class="sidebar">
+            <h2>💬 Быстрые ответы</h2>
+            <div class="quick-responses">
+                <div class="form-group">
+                    <label>Шаблоны ответов:</label>
+                    <select id="responseTemplates" class="response-select" onchange="insertTemplate(this.value)">
+                        <option value="">Выберите шаблон...</option>
+                        <option value="Спасибо за ваш вопрос. Мы рассмотрим его в ближайшее время.">Ответ 1: Базовый</option>
+                        <option value="Ваш вопрос передан ответственному лицу. Свяжемся с вами в течение 24 часов.">Ответ 2: На рассмотрении</option>
+                        <option value="Для решения вашего вопроса требуется дополнительная информация. Пожалуйста, уточните детали.">Ответ 3: Требуется уточнение</option>
+                        <option value="Вопрос решен. Если возникнут дополнительные вопросы, обращайтесь.">Ответ 4: Решен</option>
+                        <option value="Информация по вашему вопросу направлена на вашу почту.">Ответ 5: Информация отправлена</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Часто используемые ответы:</label>
+                    <div class="quick-buttons">
+                        <button class="btn" onclick="insertQuickResponse('Требуется консультация с деканатом')">Консультация</button>
+                        <button class="btn" onclick="insertQuickResponse('На рассмотрении у методиста')">Методисту</button>
+                        <button class="btn" onclick="insertQuickResponse('Ожидайте ответа в течение 3 рабочих дней')">3 дня</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Статистика:</label>
+                    <div id="stats">
+                        <p>Всего вопросов: <span id="totalQuestions">0</span></p>
+                        <p>Ожидают ответа: <span id="pendingQuestions">0</span></p>
+                        <p>Отвечено: <span id="answeredQuestions">0</span></p>
+                    </div>
+                </div>
             </div>
-            <p style="margin-top: 10px;">
-                <a href="https://docs.google.com/spreadsheets/d/1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4/edit?usp=sharing" target="_blank">
-                    Открыть Google Таблицу
-                </a>
-            </p>
         </div>
     </div>
     
+    <!-- Модальное окно для добавления/редактирования -->
+    <div id="questionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Добавить новый вопрос</h2>
+            <form id="questionForm" onsubmit="saveQuestion(event)">
+                <div class="form-group">
+                    <label for="userName">Имя того, кто задал вопрос *</label>
+                    <input type="text" id="userName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="courseFaculty">Курс и факультет *</label>
+                    <input type="text" id="courseFaculty" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="urgency">Срочность *</label>
+                    <select id="urgency" required>
+                        <option value="">Выберите срочность...</option>
+                        <option value="Высокая">Высокая</option>
+                        <option value="Средняя">Средняя</option>
+                        <option value="Низкая">Низкая</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="problem">Проблема/Вопрос *</label>
+                    <textarea id="problem" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="answer">Ответ (если есть)</label>
+                    <textarea id="answer"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="answeredBy">Кто ответил (если есть ответ)</label>
+                    <input type="text" id="answeredBy">
+                </div>
+                
+                <input type="hidden" id="questionId">
+                
+                <div class="controls">
+                    <button type="submit" class="btn">💾 Сохранить</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Уведомление -->
+    <div id="notification" class="notification"></div>
+    
+    <!-- Подключаем библиотеки для работы с Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <script>
-        // Конфигурация
-        const SHEET_ID = '1KgaMITQ2RUxJBu8C5bXgLDJYFiS9UYhtawgezXSRXq4';
-        const UPDATE_INTERVAL = 5 * 60 * 1000; // 5 минут
-        let countdownTimer = null;
-        let countdownSeconds = 300; // 5 минут в секундах
+        let questions = [];
+        let currentFile = null;
+        let editId = null;
         
-        // Элементы DOM
-        const tableBody = document.getElementById('tableBody');
-        const lastUpdateEl = document.getElementById('lastUpdate');
-        const countdownEl = document.getElementById('countdown');
-        const questionSelect = document.getElementById('questionSelect');
-        const questionDetails = document.getElementById('questionDetails');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        
-        // Демо-данные
-        const demoData = [
-            {
-                number: '1',
-                completed: false,
-                askerName: 'Иван Иванов',
-                course: '3 курс, Факультет информатики',
-                urgency: 'Высокая',
-                problem: 'Нет доступа к учебным материалам на платформе',
-                answer: '',
-                responder: ''
-            },
-            {
-                number: '2',
-                completed: false,
-                askerName: 'Мария Петрова',
-                course: '2 курс, Факультет экономики',
-                urgency: 'Средняя',
-                problem: 'Вопрос по расписанию занятий на следующую неделю',
-                answer: '',
-                responder: ''
-            },
-            {
-                number: '3',
-                completed: true,
-                askerName: 'Алексей Сидоров',
-                course: '4 курс, Факультет менеджмента',
-                urgency: 'Низкая',
-                problem: 'Технические проблемы с подключением к Wi-Fi',
-                answer: 'Проблема решена, обновите настройки сети',
-                responder: 'Техподдержка'
-            },
-            {
-                number: '4',
-                completed: false,
-                askerName: 'Анна Козлова',
-                course: '1 курс, Факультет дизайна',
-                urgency: 'Высокая',
-                problem: 'Нужна консультация по дипломному проекту',
-                answer: '',
-                responder: ''
-            },
-            {
-                number: '5',
-                completed: false,
-                askerName: 'Дмитрий Волков',
-                course: '5 курс, Медицинский факультет',
-                urgency: 'Средняя',
-                problem: 'Вопрос по датам и формату итогового экзамена',
-                answer: '',
-                responder: ''
-            }
-        ];
-        
-        // Сохраненные ответы (в реальном приложении это было бы в Google Sheets)
-        let savedResponses = JSON.parse(localStorage.getItem('question_responses')) || {};
-        
-        // Загрузка данных таблицы
-        function loadTableData() {
-            try {
-                // Объединяем демо-данные с сохраненными ответами
-                const data = demoData.map(item => {
-                    const savedResponse = savedResponses[item.number];
-                    if (savedResponse) {
-                        return {
-                            ...item,
-                            answer: savedResponse.answer || item.answer,
-                            responder: savedResponse.responder || item.responder,
-                            completed: savedResponse.completed || item.completed
-                        };
-                    }
-                    return item;
-                });
-                
-                displayData(data);
-                updateLastUpdateTime();
-                resetCountdown();
-                
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px; color: #e74c3c;">
-                            Ошибка загрузки данных. Пожалуйста, обновите страницу.
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-        
-        // Отображение данных в таблице
-        function displayData(data) {
-            if (!data || data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px; color: #7f8c8d;">
-                            Нет данных для отображения
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            let html = '';
-            
-            data.forEach((row) => {
-                const rowClass = row.completed ? 'completed-row' : (row.answer ? 'answered-row' : '');
-                
-                // Определяем класс срочности
-                let urgencyClass = 'urgency-low';
-                if (row.urgency) {
-                    const urgencyLower = row.urgency.toLowerCase();
-                    if (urgencyLower.includes('высок') || urgencyLower.includes('high') || urgencyLower.includes('срочн')) {
-                        urgencyClass = 'urgency-high';
-                    } else if (urgencyLower.includes('сред') || urgencyLower.includes('medium')) {
-                        urgencyClass = 'urgency-medium';
-                    }
-                }
-                
-                html += `
-                    <tr class="${rowClass}">
-                        <td>${escapeHTML(row.number)}</td>
-                        <td class="status-cell">
-                            ${row.completed ? 
-                                '<span class="completed-check">✓</span>' : 
-                                '<input type="checkbox" class="status-checkbox" onclick="toggleCompletion(' + row.number + ')"' + 
-                                (row.completed ? ' checked' : '') + '>'
-                            }
-                        </td>
-                        <td class="question-cell" onclick="selectQuestion(${row.number})">
-                            ${escapeHTML(row.askerName)}
-                        </td>
-                        <td>${escapeHTML(row.course)}</td>
-                        <td>
-                            ${row.urgency ? 
-                                `<span class="${urgencyClass}">${escapeHTML(row.urgency)}</span>` : 
-                                '<span class="empty-cell">—</span>'
-                            }
-                        </td>
-                        <td class="question-cell" onclick="selectQuestion(${row.number})">
-                            ${escapeHTML(row.problem)}
-                        </td>
-                        <td>
-                            ${row.answer ? 
-                                escapeHTML(row.answer) : 
-                                '<span class="empty-cell">Ожидает ответа</span>'
-                            }
-                        </td>
-                        <td>
-                            ${row.responder ? 
-                                escapeHTML(row.responder) : 
-                                '<span class="empty-cell">—</span>'
-                            }
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tableBody.innerHTML = html;
-        }
-        
-        // Выбор вопроса
-        function selectQuestion(number) {
-            const question = demoData.find(q => q.number === number.toString());
-            if (question) {
-                // Обновляем выпадающий список
-                questionSelect.value = number;
-                
-                // Заполняем детали вопроса
-                document.getElementById('detailName').textContent = question.askerName;
-                document.getElementById('detailCourse').textContent = question.course;
-                document.getElementById('detailUrgency').textContent = question.urgency;
-                document.getElementById('detailProblem').textContent = question.problem;
-                
-                // Заполняем форму сохраненными данными
-                const savedResponse = savedResponses[number];
-                if (savedResponse) {
-                    document.getElementById('answerText').value = savedResponse.answer || '';
-                    document.getElementById('responderName').value = savedResponse.responder || '';
-                    document.getElementById('markCompleted').checked = savedResponse.completed || false;
-                } else {
-                    document.getElementById('answerText').value = '';
-                    document.getElementById('responderName').value = '';
-                    document.getElementById('markCompleted').checked = false;
-                }
-                
-                // Показываем детали
-                questionDetails.style.display = 'block';
-                
-                // Прокручиваем к форме
-                document.querySelector('.answer-section').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-        
-        // Обработчик изменения выпадающего списка
-        questionSelect.addEventListener('change', function() {
-            if (this.value) {
-                selectQuestion(parseInt(this.value));
-            } else {
-                questionDetails.style.display = 'none';
-            }
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            setupFileInput();
         });
         
-        // Сохранение ответа
-        function saveResponse() {
-            const questionNumber = questionSelect.value;
-            const answer = document.getElementById('answerText').value.trim();
-            const responder = document.getElementById('responderName').value.trim();
-            const completed = document.getElementById('markCompleted').checked;
-            
-            if (!questionNumber) {
-                showError('Выберите вопрос');
+        // Настройка загрузки файла
+        function setupFileInput() {
+            const fileInput = document.getElementById('excelFile');
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    currentFile = e.target.files[0];
+                    document.getElementById('fileInfo').textContent = currentFile.name;
+                    showNotification('Файл выбран: ' + currentFile.name, 'success');
+                }
+            });
+        }
+        
+        // Загрузка данных из Excel
+        function loadFromExcel() {
+            if (!currentFile) {
+                showNotification('Пожалуйста, выберите файл Excel', 'error');
                 return;
             }
             
-            if (!answer || !responder) {
-                showError('Заполните все поля');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // Получаем первый лист
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    
+                    // Конвертируем в JSON
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    // Преобразуем данные
+                    questions = [];
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row && row.length > 0 && row[0]) {
+                            questions.push({
+                                id: i,
+                                number: row[0] || '',
+                                name: row[1] || '',
+                                course: row[2] || '',
+                                urgency: row[3] || '',
+                                problem: row[4] || '',
+                                answer: row[5] || '',
+                                answeredBy: row[6] || ''
+                            });
+                        }
+                    }
+                    
+                    renderTable();
+                    saveToLocalStorage();
+                    showNotification('Данные успешно загружены из Excel', 'success');
+                    updateStats();
+                } catch (error) {
+                    showNotification('Ошибка при чтении файла Excel: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsArrayBuffer(currentFile);
+        }
+        
+        // Сохранение в Excel
+        function saveToExcel() {
+            if (questions.length === 0) {
+                showNotification('Нет данных для сохранения', 'error');
                 return;
             }
             
             try {
-                // Сохраняем локально
-                savedResponses[questionNumber] = {
-                    answer: answer,
-                    responder: responder,
-                    completed: completed,
-                    timestamp: new Date().toISOString()
-                };
+                // Подготавливаем данные
+                const data = [
+                    ['Номер вопроса', 'Имя кто задал вопрос', 'Курс и факультет', 'Срочность', 'Проблема', 'Ответ', 'Кто ответил']
+                ];
                 
-                localStorage.setItem('question_responses', JSON.stringify(savedResponses));
+                questions.forEach((q, index) => {
+                    data.push([
+                        index + 1,
+                        q.name,
+                        q.course,
+                        q.urgency,
+                        q.problem,
+                        q.answer,
+                        q.answeredBy
+                    ]);
+                });
                 
-                // Показываем успешное сообщение
-                showSuccess('Ответ сохранен');
+                // Создаем рабочую книгу
+                const worksheet = XLSX.utils.aoa_to_sheet(data);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Вопросы");
                 
-                // Обновляем таблицу
-                loadTableData();
+                // Сохраняем файл
+                const fileName = `вопросы_ответы_${new Date().toISOString().split('T')[0]}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
                 
-                // Очищаем форму через 2 секунды
-                setTimeout(() => {
-                    clearForm();
-                }, 2000);
-                
+                showNotification('Данные успешно сохранены в Excel', 'success');
             } catch (error) {
-                console.error('Ошибка сохранения:', error);
-                showError('Ошибка при сохранении');
+                showNotification('Ошибка при сохранении в Excel: ' + error.message, 'error');
             }
         }
         
-        // Переключение статуса выполнения
-        function toggleCompletion(number) {
-            if (!savedResponses[number]) {
-                savedResponses[number] = {};
+        // Отображение таблицы
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const row = document.createElement('tr');
+                
+                // Определяем класс срочности
+                let urgencyClass = '';
+                if (question.urgency === 'Высокая') urgencyClass = 'urgency-high';
+                else if (question.urgency === 'Средняя') urgencyClass = 'urgency-medium';
+                else if (question.urgency === 'Низкая') urgencyClass = 'urgency-low';
+                
+                // Определяем статус
+                const hasAnswer = question.answer && question.answer.trim() !== '';
+                const statusClass = hasAnswer ? 'status-answered' : 'status-pending';
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${question.name}</td>
+                    <td>${question.course}</td>
+                    <td class="${urgencyClass}">${question.urgency}</td>
+                    <td>${question.problem}</td>
+                    <td class="${statusClass}">${hasAnswer ? question.answer : 'Нет ответа'}</td>
+                    <td>${question.answeredBy || '-'}</td>
+                    <td>
+                        <button class="btn" onclick="editQuestion(${index})">✏️</button>
+                        <button class="btn btn-danger" onclick="deleteQuestion(${index})">🗑️</button>
+                        ${!hasAnswer ? `<button class="btn btn-secondary" onclick="answerQuestion(${index})">💬 Ответить</button>` : ''}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            updateStats();
+        }
+        
+        // Добавление/редактирование вопроса
+        function showAddModal() {
+            editId = null;
+            document.getElementById('modalTitle').textContent = 'Добавить новый вопрос';
+            document.getElementById('questionForm').reset();
+            document.getElementById('questionId').value = '';
+            document.getElementById('questionModal').style.display = 'block';
+        }
+        
+        function editQuestion(index) {
+            const question = questions[index];
+            editId = index;
+            
+            document.getElementById('modalTitle').textContent = 'Редактировать вопрос';
+            document.getElementById('userName').value = question.name;
+            document.getElementById('courseFaculty').value = question.course;
+            document.getElementById('urgency').value = question.urgency;
+            document.getElementById('problem').value = question.problem;
+            document.getElementById('answer').value = question.answer;
+            document.getElementById('answeredBy').value = question.answeredBy;
+            document.getElementById('questionId').value = index;
+            
+            document.getElementById('questionModal').style.display = 'block';
+        }
+        
+        function answerQuestion(index) {
+            const question = questions[index];
+            editId = index;
+            
+            document.getElementById('modalTitle').textContent = 'Ответить на вопрос';
+            document.getElementById('userName').value = question.name;
+            document.getElementById('courseFaculty').value = question.course;
+            document.getElementById('urgency').value = question.urgency;
+            document.getElementById('problem').value = question.problem;
+            document.getElementById('answer').value = '';
+            document.getElementById('answeredBy').value = '';
+            document.getElementById('questionId').value = index;
+            
+            // Фокус на поле ответа
+            setTimeout(() => {
+                document.getElementById('answer').focus();
+            }, 100);
+            
+            document.getElementById('questionModal').style.display = 'block';
+        }
+        
+        function saveQuestion(event) {
+            event.preventDefault();
+            
+            const question = {
+                id: questions.length + 1,
+                name: document.getElementById('userName').value,
+                course: document.getElementById('courseFaculty').value,
+                urgency: document.getElementById('urgency').value,
+                problem: document.getElementById('problem').value,
+                answer: document.getElementById('answer').value,
+                answeredBy: document.getElementById('answeredBy').value
+            };
+            
+            if (editId !== null) {
+                // Обновляем существующий вопрос
+                questions[editId] = question;
+            } else {
+                // Добавляем новый вопрос
+                questions.push(question);
             }
             
-            savedResponses[number].completed = !savedResponses[number].completed;
-            localStorage.setItem('question_responses', JSON.stringify(savedResponses));
+            renderTable();
+            saveToLocalStorage();
+            closeModal();
+            showNotification('Вопрос сохранен успешно', 'success');
+        }
+        
+        function deleteQuestion(index) {
+            if (confirm('Вы уверены, что хотите удалить этот вопрос?')) {
+                questions.splice(index, 1);
+                renderTable();
+                saveToLocalStorage();
+                showNotification('Вопрос удален', 'success');
+            }
+        }
+        
+        function clearTable() {
+            if (confirm('Вы уверены, что хотите очистить всю таблицу? Все данные будут удалены.')) {
+                questions = [];
+                renderTable();
+                saveToLocalStorage();
+                showNotification('Таблица очищена', 'success');
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('questionModal').style.display = 'none';
+        }
+        
+        // Работа с быстрыми ответами
+        function insertTemplate(value) {
+            if (value && editId !== null) {
+                document.getElementById('answer').value = value;
+                document.getElementById('responseTemplates').selectedIndex = 0;
+            }
+        }
+        
+        function insertQuickResponse(response) {
+            if (editId !== null) {
+                const answerField = document.getElementById('answer');
+                const currentValue = answerField.value;
+                answerField.value = currentValue ? currentValue + '\n' + response : response;
+            } else {
+                showNotification('Сначала откройте вопрос для ответа', 'error');
+            }
+        }
+        
+        // Локальное хранилище
+        function saveToLocalStorage() {
+            localStorage.setItem('questionsData', JSON.stringify(questions));
+        }
+        
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('questionsData');
+            if (savedData) {
+                try {
+                    questions = JSON.parse(savedData);
+                    renderTable();
+                } catch (e) {
+                    console.error('Ошибка загрузки из локального хранилища:', e);
+                }
+            }
+        }
+        
+        // Статистика
+        function updateStats() {
+            const total = questions.length;
+            const answered = questions.filter(q => q.answer && q.answer.trim() !== '').length;
+            const pending = total - answered;
             
-            loadTableData();
+            document.getElementById('totalQuestions').textContent = total;
+            document.getElementById('answeredQuestions').textContent = answered;
+            document.getElementById('pendingQuestions').textContent = pending;
         }
         
-        // Очистка формы
-        function clearForm() {
-            document.getElementById('answerForm').reset();
-            questionDetails.style.display = 'none';
-            questionSelect.value = '';
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-        
-        // Показать успешное сообщение
-        function showSuccess(message) {
-            successMessage.textContent = `✅ ${message}`;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-        }
-        
-        // Показать сообщение об ошибке
-        function showError(message) {
-            errorMessage.textContent = `❌ ${message}`;
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
+        // Уведомления
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
             
             setTimeout(() => {
-                errorMessage.style.display = 'none';
+                notification.style.display = 'none';
             }, 3000);
         }
         
-        // Обновить время последнего обновления
-        function updateLastUpdateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            
-            lastUpdateEl.textContent = timeString;
-        }
-        
-        // Сброс таймера обновления
-        function resetCountdown() {
-            clearInterval(countdownTimer);
-            countdownSeconds = 300;
-            updateCountdownDisplay();
-            
-            countdownTimer = setInterval(() => {
-                countdownSeconds--;
-                updateCountdownDisplay();
-                
-                if (countdownSeconds <= 0) {
-                    loadTableData();
-                }
-            }, 1000);
-        }
-        
-        // Обновление отображения таймера
-        function updateCountdownDisplay() {
-            const minutes = Math.floor(countdownSeconds / 60);
-            const seconds = countdownSeconds % 60;
-            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-        
-        // Настройка Google Sheets (инструкция)
-        function setupGoogleSheets() {
-            const instructions = `
-                Для подключения к Google Таблице необходимо:
-                
-                1. Открыть Google Таблицу по ссылке выше
-                2. Нажать "Настройки доступа"
-                3. Выбрать "Любой, у кого есть ссылка"
-                4. Выбрать роль "Редактор"
-                5. Скопировать ID таблицы: ${SHEET_ID}
-                
-                Затем заменить в коде:
-                const SHEET_ID = '${SHEET_ID}';
-                
-                И использовать Google Apps Script для обработки данных.
-            `;
-            
-            alert(instructions);
-        }
-        
-        // Экранирование HTML
-        function escapeHTML(text) {
-            if (!text) return '';
-            return String(text)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-                .replace(/\n/g, '<br>');
-        }
-        
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            // Загружаем данные
-            loadTableData();
-            
-            // Автоматическое обновление каждые 5 минут
-            setInterval(loadTableData, UPDATE_INTERVAL);
-            
-            // Заполняем выпадающий список демо-вопросами
-            questionSelect.innerHTML = '<option value="">-- Выберите вопрос --</option>' +
-                demoData.filter(q => !q.answer).map(q => 
-                    `<option value="${q.number}">#${q.number} - ${q.askerName}: ${q.problem.substring(0, 50)}...</option>`
-                ).join('');
-        });
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('questionModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
     </script>
 </body>
 </html>
