@@ -16,6 +16,7 @@
             background-color: #f5f8fa;
             color: #333;
             line-height: 1.6;
+            padding: 20px;
         }
         
         .container {
@@ -23,7 +24,7 @@
             flex-wrap: wrap;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            gap: 20px;
         }
         
         header {
@@ -32,7 +33,7 @@
             color: white;
             padding: 25px 30px;
             border-radius: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
         }
         
@@ -46,17 +47,14 @@
             font-size: 1.1rem;
         }
         
-        /* Таблица Excel */
-        .table-container {
-            flex: 1;
+        /* Контейнер для таблицы */
+        .table-section {
+            flex: 2;
             min-width: 300px;
             background-color: white;
             border-radius: 12px;
             padding: 25px;
-            margin-right: 20px;
-            margin-bottom: 20px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
         }
         
         .table-header {
@@ -78,20 +76,6 @@
             gap: 10px;
         }
         
-        .search-box {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            width: 200px;
-            transition: all 0.3s;
-        }
-        
-        .search-box:focus {
-            outline: none;
-            border-color: #4285f4;
-            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
-        }
-        
         .refresh-btn {
             background-color: #34a853;
             color: white;
@@ -100,77 +84,44 @@
             padding: 10px 15px;
             cursor: pointer;
             transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .refresh-btn:hover {
             background-color: #2d9447;
         }
         
-        .excel-table {
+        .refresh-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Контейнер для встроенной таблицы */
+        .embedded-table-container {
             width: 100%;
-            border-collapse: collapse;
-            overflow-x: auto;
-            display: block;
-        }
-        
-        .excel-table th {
-            background-color: #f8f9fa;
-            color: #555;
-            font-weight: 600;
-            text-align: left;
-            padding: 16px 12px;
-            border-bottom: 2px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .excel-table td {
-            padding: 14px 12px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
-        }
-        
-        .excel-table tr:hover {
+            height: 700px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
             background-color: #f9f9f9;
         }
         
-        .excel-table tr:nth-child(even) {
-            background-color: #fcfcfc;
+        .embedded-table {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         
-        /* Стилизация срочности */
-        .urgency-cell {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-        
-        .urgency-low {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .urgency-medium {
-            background-color: #fff3e0;
-            color: #f57c00;
-        }
-        
-        .urgency-high {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        
-        /* Форма ответов */
-        .form-container {
-            flex: 0 0 380px;
+        /* Форма */
+        .form-section {
+            flex: 1;
+            min-width: 300px;
             background-color: white;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px;
         }
         
         .form-header {
@@ -194,88 +145,13 @@
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #e0e0e0;
-            height: 600px;
+            height: 500px;
         }
         
         .form-iframe {
             width: 100%;
             height: 100%;
             border: none;
-        }
-        
-        /* Статусы ответов */
-        .answered {
-            background-color: #e8f5e9;
-            border-left: 4px solid #34a853;
-        }
-        
-        .pending {
-            background-color: #fff3e0;
-            border-left: 4px solid #fbbc05;
-        }
-        
-        /* Футер */
-        footer {
-            width: 100%;
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        
-        /* Адаптивный дизайн */
-        @media (max-width: 1024px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .table-container {
-                margin-right: 0;
-            }
-            
-            .form-container {
-                flex: 0 0 auto;
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .table-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .table-controls {
-                margin-top: 15px;
-                width: 100%;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-        }
-        
-        /* Анимация загрузки */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #4285f4;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         
         /* Инструкция */
@@ -300,128 +176,156 @@
             margin-bottom: 5px;
         }
         
-        /* Сообщения */
-        .status-message {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.95rem;
+        /* Футер */
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9rem;
         }
         
-        .status-info {
-            background-color: #e3f2fd;
-            color: #1565c0;
-            border-left: 4px solid #2196f3;
-        }
-        
-        .status-success {
+        /* Статус */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
             background-color: #e8f5e9;
             color: #2e7d32;
-            border-left: 4px solid #4caf50;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
         }
         
-        .status-error {
-            background-color: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #f44336;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34a853;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
         
-        .error-details {
-            background-color: #fff3e0;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #ff9800;
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
-        .solution-steps {
-            background-color: #e8f5e9;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #4caf50;
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .embedded-table-container {
+                height: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .embedded-table-container {
+                height: 500px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .table-section, .form-section {
+                padding: 20px;
+            }
+        }
+        
+        /* Оптимизация для Google Sheets */
+        .sheets-optimization {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Система вопросов и ответов</h1>
-            <p>Просматривайте вопросы и оставляйте ответы через интегрированную форму</p>
+            <h1>📊 Система вопросов и ответов</h1>
+            <p>Таблица вопросов и форма для ответов в реальном времени</p>
         </header>
         
-        <main class="table-container">
+        <main class="table-section">
             <div class="table-header">
-                <h2>Таблица вопросов</h2>
+                <h2>Таблица вопросов 
+                    <span class="status-indicator">
+                        <span class="status-dot"></span>
+                        онлайн
+                    </span>
+                </h2>
                 <div class="table-controls">
-                    <input type="text" id="searchInput" class="search-box" placeholder="Поиск по вопросам...">
-                    <button id="refreshBtn" class="refresh-btn">Обновить данные</button>
+                    <button id="refreshBtn" class="refresh-btn" title="Обновить таблицу">
+                        <svg viewBox="0 0 24 24" fill="white">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        Обновить
+                    </button>
                 </div>
             </div>
             
-            <div id="statusMessage" class="status-message status-info" style="display: none;">
-                Загрузка данных из таблицы...
+            <div class="sheets-optimization">
+                Данные обновляются автоматически в Google Sheets
             </div>
             
-            <div id="tableLoading" class="loading">
-                <div class="spinner"></div>
-                <p>Загрузка данных таблицы...</p>
+            <!-- Прямое встраивание Google Sheets -->
+            <div class="embedded-table-container">
+                <iframe 
+                    class="embedded-table"
+                    id="googleSheetsFrame"
+                    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQTo1gakooY6qjJK1AU_oQ5CcZ9RCOEmwhdOYh0IeqbqRuFWSnOJyv9zLX6uSWdXOKmfQkZm4cGMhSG/pubhtml?widget=true&amp;headers=false&amp;chrome=false"
+                    frameborder="0"
+                    allowfullscreen
+                    title="Google Sheets таблица вопросов"
+                >
+                    Ваш браузер не поддерживает iframe. 
+                    <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQTo1gakooY6qjJK1AU_oQ5CcZ9RCOEmwhdOYh0IeqbqRuFWSnOJyv9zLX6uSWdXOKmfQkZm4cGMhSG/pubhtml" target="_blank">
+                        Открыть таблицу напрямую
+                    </a>
+                </iframe>
             </div>
-            
-            <div id="errorDetails" class="error-details" style="display: none;">
-                <h3>Проблема с загрузкой таблицы</h3>
-                <p id="errorText"></p>
-                <div class="solution-steps">
-                    <h4>Решение:</h4>
-                    <ol>
-                        <li>Убедитесь, что таблица опубликована (Файл → Опубликовать в интернете)</li>
-                        <li>Используйте этот формат ссылки: <code>https://docs.google.com/spreadsheets/d/1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0/edit?usp=sharing</code></li>
-                        <li>Или экспортируйте как CSV: <code>https://docs.google.com/spreadsheets/d/1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0/export?format=csv</code></li>
-                    </ol>
-                </div>
-            </div>
-            
-            <table id="excelTable" class="excel-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Номер вопроса</th>
-                        <th>Кто задает</th>
-                        <th>Курс и факультет</th>
-                        <th>Срочность</th>
-                        <th>Проблема</th>
-                        <th>Ответ</th>
-                        <th>Кто ответил</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Данные будут загружены через JavaScript -->
-                </tbody>
-            </table>
             
             <div class="instructions">
-                <h4>Как использовать эту таблицу:</h4>
+                <h4>Как работать с таблицей:</h4>
                 <ul>
-                    <li>Данные загружаются напрямую из вашей Google таблицы</li>
-                    <li>Используйте поле поиска для фильтрации вопросов</li>
-                    <li>Нажмите "Обновить данные" для получения актуальной информации</li>
-                    <li>Таблица автоматически обновляется каждые 60 секунд</li>
-                    <li>Чтобы ответить на вопрос, используйте форму справа</li>
+                    <li>Вы видите <strong>напрямую встроенную Google Sheets таблицу</strong></li>
+                    <li>Данные обновляются в реальном времени</li>
+                    <li>Используйте кнопку "Обновить" для принудительного обновления</li>
+                    <li>Для редактирования таблицы нажмите на значок Google Sheets в правом нижнем углу</li>
+                    <li>Все изменения сохраняются автоматически</li>
                 </ul>
             </div>
         </main>
         
-        <aside class="form-container">
+        <aside class="form-section">
             <div class="form-header">
-                <h2>Форма для ответа</h2>
+                <h2>📝 Форма для ответа</h2>
                 <p class="form-description">Выберите номер вопроса из таблицы и введите ваш ответ</p>
             </div>
             
             <div class="form-iframe-container">
-                <iframe class="form-iframe" 
-                        src="https://docs.google.com/forms/d/e/1FAIpQLScUam3l9zrYro6Y2E01d41c2F8UOoGgQU0INpnPjoz4w24oaw/viewform?embedded=true"
-                        frameborder="0" 
-                        marginheight="0" 
-                        marginwidth="0">
+                <iframe 
+                    class="form-iframe"
+                    src="https://docs.google.com/forms/d/e/1FAIpQLScUam3l9zrYro6Y2E01d41c2F8UOoGgQU0INpnPjoz4w24oaw/viewform?embedded=true&headers=false"
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0"
+                    title="Google Forms форма для ответов"
+                >
                     Загрузка формы...
                 </iframe>
             </div>
@@ -430,411 +334,109 @@
                 <h4>Инструкция по отправке ответа:</h4>
                 <ul>
                     <li>Найдите номер интересующего вопроса в таблице слева</li>
-                    <li>Введите номер вопроса в поле формы</li>
-                    <li>Заполните все обязательные поля формы</li>
+                    <li>Введите номер вопроса в поле формы "Номер вопроса"</li>
+                    <li>Заполните ваше имя и ответ</li>
                     <li>Нажмите "Отправить" для сохранения ответа</li>
-                    <li><strong>После отправки ответа, обновите таблицу слева</strong></li>
+                    <li><strong>Ответ автоматически появится в таблице</strong></li>
                 </ul>
             </div>
         </aside>
         
         <footer>
-            <p>Данные загружаются из Google Sheets • Форма интегрирована из Google Forms • Последнее обновление: <span id="lastUpdateTime"></span></p>
+            <p>✅ Таблица напрямую встроена из Google Sheets • Форма из Google Forms • Обновляется в реальном времени</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; color: #888;">
+                Последнее обновление страницы: <span id="pageLoadTime"></span>
+            </p>
         </footer>
     </div>
     
     <script>
-        // Основные настройки
-        const SPREADSHEET_ID = '1bu4WDRv1H_YKGHaXpjGYkokmQPvBZvqtwwLB4DLWsk0';
-        
-        // Различные методы доступа к таблице (попробуем все)
-        const DATA_SOURCES = [
-            // Метод 1: CSV экспорт (самый надежный)
-            `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&timestamp=${Date.now()}`,
-            
-            // Метод 2: JSON через opensheet (работает без API ключа)
-            `https://opensheet.elk.sh/${SPREADSHEET_ID}/1`,
-            
-            // Метод 3: Google Sheets API v4 (требует публичного доступа)
-            `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/A:G?key=AIzaSyAhFVD0pryEAq2l0LpghTzJrVqHh5rM_TM`,
-            
-            // Метод 4: Прокси для HTML версии
-            `https://corsproxy.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vQTo1gakooY6qjJK1AU_oQ5CcZ9RCOEmwhdOYh0IeqbqRuFWSnOJyv9zLX6uSWdXOKmfQkZm4cGMhSG/pubhtml`
-        ];
-        
-        // Демо-данные на случай полного сбоя
-        const DEMO_DATA = [
-            {
-                id: 1,
-                questioner: "Овоуо",
-                course: "Связь три четыре",
-                urgency: "Ну минутку подожду (не сильно срочно)",
-                problem: "Аолагв",
-                answer: "",
-                answeredBy: ""
-            }
-        ];
-        
-        // Функция для отображения статуса
-        function showStatus(message, type = 'info') {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
-            statusDiv.className = 'status-message';
-            statusDiv.classList.add(`status-${type}`);
-            statusDiv.style.display = 'block';
-        }
-        
-        // Функция для скрытия статуса
-        function hideStatus() {
-            document.getElementById('statusMessage').style.display = 'none';
-        }
-        
-        // Функция для показа ошибки
-        function showError(message, details = '') {
-            document.getElementById('errorText').textContent = message;
-            if (details) {
-                document.getElementById('errorText').innerHTML += `<br><small>${details}</small>`;
-            }
-            document.getElementById('errorDetails').style.display = 'block';
-        }
-        
-        // Функция для скрытия ошибки
-        function hideError() {
-            document.getElementById('errorDetails').style.display = 'none';
-        }
-        
-        // Функция для обновления времени
-        function updateLastUpdateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ru-RU', { 
+        // Время загрузки страницы
+        document.getElementById('pageLoadTime').textContent = 
+            new Date().toLocaleTimeString('ru-RU', { 
                 hour: '2-digit', 
                 minute: '2-digit',
                 second: '2-digit'
             });
-            document.getElementById('lastUpdateTime').textContent = timeString;
+        
+        // Функция для обновления iframe
+        function refreshGoogleSheets() {
+            const iframe = document.getElementById('googleSheetsFrame');
+            const currentSrc = iframe.src;
+            
+            // Добавляем параметр времени для обхода кэша
+            iframe.src = currentSrc.split('?')[0] + '?widget=true&headers=false&chrome=false&t=' + Date.now();
+            
+            // Показываем визуальную обратную связь
+            const btn = document.getElementById('refreshBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="white" style="animation: spin 1s linear infinite;">
+                    <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+                </svg>
+                Обновляется...
+            `;
+            
+            btn.style.backgroundColor = '#fbbc05';
+            
+            // Возвращаем исходный вид через 2 секунды
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = '';
+            }, 2000);
+            
+            // Обновляем время в футере
+            document.getElementById('pageLoadTime').textContent = 
+                new Date().toLocaleTimeString('ru-RU', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
         }
         
-        // Функция для получения класса срочности
-        function getUrgencyClass(urgencyText) {
-            if (!urgencyText) return "urgency-low";
-            
-            const urgency = urgencyText.toLowerCase();
-            if (urgency.includes("очень срочно") || urgency.includes("срочно")) {
-                return "urgency-high";
-            } else if (urgency.includes("средняя") || urgency.includes("средней")) {
-                return "urgency-medium";
-            } else {
-                return "urgency-low";
+        // Автоматическое обновление каждые 5 минут (300000 мс)
+        setInterval(refreshGoogleSheets, 300000);
+        
+        // Обработчик кнопки обновления
+        document.getElementById('refreshBtn').addEventListener('click', refreshGoogleSheets);
+        
+        // Добавляем стиль для анимации вращения
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
-        }
+        `;
+        document.head.appendChild(style);
         
-        // Функция для форматирования текста срочности
-        function formatUrgencyText(urgencyText) {
-            if (!urgencyText) return "Не указана";
+        // Улучшение для мобильных устройств
+        function optimizeForMobile() {
+            const iframe = document.getElementById('googleSheetsFrame');
+            const isMobile = window.innerWidth <= 768;
             
-            const text = urgencyText.toLowerCase();
-            if (text.includes("не сильно срочно") || text.includes("не срочно")) {
-                return "Низкая";
-            } else if (text.includes("срочно")) {
-                return "Высокая";
-            } else if (text.includes("средняя")) {
-                return "Средняя";
-            } else if (text.includes("очень срочно")) {
-                return "Очень высокая";
-            }
-            
-            return urgencyText;
-        }
-        
-        // Функция для парсинга CSV
-        function parseCSV(csvText) {
-            const rows = [];
-            const lines = csvText.split('\n');
-            
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
+            if (isMobile) {
+                // На мобильных увеличиваем высоту для лучшего просмотра
+                iframe.parentElement.style.height = '700px';
                 
-                // Простой парсинг CSV (учитываем кавычки)
-                const columns = [];
-                let current = '';
-                let inQuotes = false;
-                
-                for (let j = 0; j < line.length; j++) {
-                    const char = line[j];
-                    
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        columns.push(current.trim());
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                }
-                
-                columns.push(current.trim());
-                
-                // Убираем кавычки если есть
-                for (let k = 0; k < columns.length; k++) {
-                    if (columns[k].startsWith('"') && columns[k].endsWith('"')) {
-                        columns[k] = columns[k].substring(1, columns[k].length - 1);
-                    }
-                }
-                
-                rows.push(columns);
-            }
-            
-            return rows;
-        }
-        
-        // Метод 1: Загрузка через CSV
-        async function loadViaCSV(url) {
-            try {
-                showStatus('Загрузка CSV данных...', 'info');
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const csvText = await response.text();
-                const rows = parseCSV(csvText);
-                
-                if (rows.length < 2) {
-                    throw new Error('Мало данных в CSV');
-                }
-                
-                return rows.slice(1).map((row, index) => ({
-                    id: row[0] || (index + 1),
-                    questioner: row[1] || '',
-                    course: row[2] || '',
-                    urgency: row[3] || '',
-                    problem: row[4] || '',
-                    answer: row[5] || '',
-                    answeredBy: row[6] || ''
-                }));
-                
-            } catch (error) {
-                console.log('CSV метод не сработал:', error.message);
-                return null;
-            }
-        }
-        
-        // Метод 2: Загрузка через JSON
-        async function loadViaJSON(url) {
-            try {
-                showStatus('Загрузка JSON данных...', 'info');
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const data = await response.json();
-                
-                return data.map((row, index) => ({
-                    id: row['Номер вопроса'] || row['A'] || (index + 1),
-                    questioner: row['Кто задает'] || row['B'] || '',
-                    course: row['Курс и факультет'] || row['C'] || '',
-                    urgency: row['Срочность'] || row['D'] || '',
-                    problem: row['Проблема'] || row['E'] || '',
-                    answer: row['Ответ'] || row['F'] || '',
-                    answeredBy: row['Кто ответил'] || row['G'] || ''
-                }));
-                
-            } catch (error) {
-                console.log('JSON метод не сработал:', error.message);
-                return null;
-            }
-        }
-        
-        // Метод 3: Загрузка через Sheets API
-        async function loadViaSheetsAPI(url) {
-            try {
-                showStatus('Загрузка через Google Sheets API...', 'info');
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const data = await response.json();
-                
-                if (!data.values || data.values.length < 2) {
-                    throw new Error('Нет данных в таблице');
-                }
-                
-                return data.values.slice(1).map((row, index) => ({
-                    id: row[0] || (index + 1),
-                    questioner: row[1] || '',
-                    course: row[2] || '',
-                    urgency: row[3] || '',
-                    problem: row[4] || '',
-                    answer: row[5] || '',
-                    answeredBy: row[6] || ''
-                }));
-                
-            } catch (error) {
-                console.log('Sheets API метод не сработал:', error.message);
-                return null;
-            }
-        }
-        
-        // Метод 4: Загрузка через HTML прокси
-        async function loadViaHTML(url) {
-            try {
-                showStatus('Загрузка HTML данных...', 'info');
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const htmlText = await response.text();
-                
-                // Создаем временный элемент для парсинга
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-                
-                // Ищем таблицу
-                const table = doc.querySelector('table');
-                if (!table) throw new Error('Таблица не найдена в HTML');
-                
-                const rows = table.querySelectorAll('tr');
-                const data = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const cells = rows[i].querySelectorAll('td');
-                    if (cells.length >= 6) {
-                        data.push({
-                            id: cells[0]?.textContent?.trim() || i,
-                            questioner: cells[1]?.textContent?.trim() || '',
-                            course: cells[2]?.textContent?.trim() || '',
-                            urgency: cells[3]?.textContent?.trim() || '',
-                            problem: cells[4]?.textContent?.trim() || '',
-                            answer: cells[5]?.textContent?.trim() || '',
-                            answeredBy: cells[6]?.textContent?.trim() || ''
-                        });
-                    }
-                }
-                
-                return data.length > 0 ? data : null;
-                
-            } catch (error) {
-                console.log('HTML метод не сработал:', error.message);
-                return null;
-            }
-        }
-        
-        // Основная функция загрузки данных
-        async function loadTableData() {
-            const tableBody = document.getElementById('tableBody');
-            const loadingElement = document.getElementById('tableLoading');
-            const tableElement = document.getElementById('excelTable');
-            
-            // Сбрасываем состояние
-            loadingElement.style.display = 'block';
-            tableElement.style.display = 'none';
-            hideError();
-            showStatus('Попытка загрузки данных...', 'info');
-            
-            let tableData = null;
-            let methodUsed = '';
-            
-            // Пробуем все методы по очереди
-            const methods = [
-                { name: 'CSV', func: () => loadViaCSV(DATA_SOURCES[0]) },
-                { name: 'JSON', func: () => loadViaJSON(DATA_SOURCES[1]) },
-                { name: 'Sheets API', func: () => loadViaSheetsAPI(DATA_SOURCES[2]) },
-                { name: 'HTML', func: () => loadViaHTML(DATA_SOURCES[3]) }
-            ];
-            
-            for (const method of methods) {
-                try {
-                    showStatus(`Попытка ${method.name}...`, 'info');
-                    tableData = await method.func();
-                    
-                    if (tableData && tableData.length > 0) {
-                        methodUsed = method.name;
-                        break;
-                    }
-                } catch (error) {
-                    console.log(`Метод ${method.name} не сработал:`, error.message);
+                // Добавляем мета-тег для лучшего отображения на мобильных
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes');
                 }
             }
-            
-            // Если ничего не сработало, используем демо-данные
-            if (!tableData || tableData.length === 0) {
-                showStatus('Используются демо-данные', 'error');
-                showError(
-                    'Не удалось загрузить данные из таблицы. Проверьте настройки доступа.',
-                    'Попробуйте опубликовать таблицу: Файл → Опубликовать в интернете → Весь документ → Опубликовать'
-                );
-                tableData = DEMO_DATA;
-                methodUsed = 'Демо-данные';
-            } else {
-                showStatus(`Загружено ${tableData.length} вопросов (${methodUsed})`, 'success');
-                setTimeout(hideStatus, 3000);
-            }
-            
-            // Очищаем таблицу
-            tableBody.innerHTML = '';
-            
-            // Заполняем таблицу данными
-            tableData.forEach(item => {
-                const row = document.createElement('tr');
-                
-                // Определяем статус ответа
-                if (item.answer && item.answer.trim() !== '') {
-                    row.classList.add('answered');
-                } else {
-                    row.classList.add('pending');
-                }
-                
-                const urgencyClass = getUrgencyClass(item.urgency);
-                const formattedUrgency = formatUrgencyText(item.urgency);
-                
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.questioner}</td>
-                    <td>${item.course}</td>
-                    <td><span class="urgency-cell ${urgencyClass}">${formattedUrgency}</span></td>
-                    <td>${item.problem}</td>
-                    <td>${item.answer || "<em>Ожидает ответа</em>"}</td>
-                    <td>${item.answeredBy}</td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Показываем таблицу
-            loadingElement.style.display = 'none';
-            tableElement.style.display = 'block';
-            updateLastUpdateTime();
         }
         
-        // Функция для фильтрации таблицы
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableBody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
-        }
+        // Вызываем при загрузке и изменении размера
+        window.addEventListener('load', optimizeForMobile);
+        window.addEventListener('resize', optimizeForMobile);
         
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            // Устанавливаем начальное время
-            updateLastUpdateTime();
-            
-            // Загружаем данные
-            loadTableData();
-            
-            // Настраиваем поиск
-            document.getElementById('searchInput').addEventListener('keyup', filterTable);
-            
-            // Настраиваем кнопку обновления
-            document.getElementById('refreshBtn').addEventListener('click', loadTableData);
-            
-            // Автообновление каждые 60 секунд
-            setInterval(loadTableData, 60000);
-        });
+        // Сообщение в консоль для отладки
+        console.log('Таблица Google Sheets встроена напрямую. Если таблица не отображается:');
+        console.log('1. Проверьте интернет соединение');
+        console.log('2. Убедитесь, что таблица опубликована для всех (Файл → Опубликовать в интернете)');
+        console.log('3. Для редактирования нажмите на иконку Google Sheets в правом нижнем углу таблицы');
     </script>
 </body>
 </html>
